@@ -1,0 +1,10 @@
+description = "System Storage Provider for TreeFs"
+
+dependencies {
+    compile(project(":treefs-common"))
+    compile(project(":treefs-sp"))
+    compile("commons-io:commons-io:2.4")
+    compile("net-cworks:json:1.1")
+    compile("net-cworks:http:1.1")
+
+}
