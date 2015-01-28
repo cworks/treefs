@@ -1,0 +1,11 @@
+description "TreeFs domain objects - used in treefs-client and treefs-server"
+
+dependencies {
+    compile(project(":treefs-sp"))
+    compile(project(":treefs-common"))
+    compile("net-cworks:json:1.1")
+
+    compile("com.fasterxml.jackson.core:jackson-core:2.3.0")
+    compile("com.fasterxml.jackson.core:jackson-annotations:2.3.0")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.3.0")
+}
