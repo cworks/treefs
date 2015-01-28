@@ -1,0 +1,9 @@
+include "treefs-sp"
+include "treefs-common"
+include "treefs-syssp"
+include "treefs-domain"
+include "treefs-client"
+include "treefs-core"
+include "treefs-server"
+
+rootProject.name="treefs"

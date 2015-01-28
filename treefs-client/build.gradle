@@ -1,0 +1,15 @@
+description "TreeFs client - used to perform operations on TreeFs Storage Service"
+
+
+dependencies {
+    compile("org.apache.httpcomponents:httpclient:4.3.2")
+    compile("org.apache.httpcomponents:httpcore:4.3.2")
+    compile("org.apache.httpcomponents:httpmime:4.3.2")
+
+    compile("net-cworks:json:1.1")
+    compile("net-cworks:http:1.1")
+
+    compile(project(":treefs-domain"))
+
+    testCompile(project(":treefs-server"))
+}
