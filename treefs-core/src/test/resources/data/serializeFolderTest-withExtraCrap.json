@@ -1,0 +1,16 @@
+{
+  "name": "folder3",
+  "path": "corbett/stuff",
+  "description": "A folder",
+  "metadata": {
+    "patientId": "corbett123",
+    "address": "641 Post Oak Dr. Hurst Texas, 76053"
+  },
+  "createdAt": "2014-01-14T20:59:02+00:00",
+  "createdBy": "corbett",
+  "type": "folder",
+  "eyeColor":"brown",
+  "weight":"201",
+  "height":"6 ft.",
+  "age":"30"
+}

@@ -1,0 +1,1 @@
+{"name":"c1","type":"folder","path":"folderToFolderCopy/a1/b1/c1","creationTime":"2014-02-12T17:43:05+00:00","lastModifiedTime":"2014-02-12T17:43:05+00:00","lastAccessedTime":"2014-02-12T17:43:05+00:00"}

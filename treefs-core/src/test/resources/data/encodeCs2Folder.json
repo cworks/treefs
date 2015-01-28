@@ -1,0 +1,29 @@
+{
+  "type": "folder",
+  "name": "mydocs",
+  "paths": [
+    {
+      "type": "folder",
+      "name": "p1",
+      "description": "Happy P1 folder"
+    },
+    {
+      "type": "folder",
+      "name": "p2",
+      "description": "Happy P2 folder"
+    },
+    {
+      "type": "file",
+      "name": "file1",
+      "description": "Sad little F1 file"
+    }
+  ],
+  "path": "corbett/stuff",
+  "createdBy": "corbett",
+  "createdAt": "2014-01-10 10:00",
+  "metadata": {
+    "patientId": "corbett123",
+    "address": "641 Post Oak Dr. Hurst Texas, 76053"
+  },
+  "description": "A folder for my docs"
+}

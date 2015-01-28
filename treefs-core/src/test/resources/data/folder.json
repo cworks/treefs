@@ -1,0 +1,27 @@
+{
+  "type": "folder",
+  "foo":"bar",
+  "id": "folderId",
+  "createdAt": null,
+  "modifiedAt": null,
+  "name": "MyFolder",
+  "description": "A little of this a little of that",
+  "size": 0,
+  "createdBy": "Corbofett",
+  "modifiedBy": null,
+  "ownedBy": null,
+  "parent": "Users",
+  "items": {
+    "entries": [
+            {
+                "type": "file",
+                "id": "123456789",
+                "name": "HappyFace.jpg",
+                "size": 4096
+            }
+
+    ],
+    "totalCount": 1
+  }
+}
+
