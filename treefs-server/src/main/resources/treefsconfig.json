@@ -1,0 +1,21 @@
+{
+    "host" : "localhost",
+    "port" : 4444,
+    "verticles" : [
+        {
+            "verticle" : "net.cworks.treefs.server.TreeFsServer",
+            "instances" : 1,
+            "type" : "standard"
+        },
+        {
+            "verticle" : "net.cworks.treefs.server.handler.SiegeApp",
+            "instances" : 7,
+            "type" : "worker"
+        },
+        {
+            "verticle" : "net.cworks.treefs.server.worker.Worker",
+            "instances" : 20,
+            "type" : "worker"
+        }
+    ]
+}
