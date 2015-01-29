@@ -48,6 +48,8 @@ dependencies {
     compile("io.vertx:vertx-hazelcast:$vertxVersion")
     testCompile("junit:junit:$junitVersion")
     testCompile("io.vertx:testtools:$toolsVersion")
+    testCompile("org.vert-x:vertx-junit-annotations:1.3.1.final");
+
 }
 
 // This sets up the classpath for the script itself

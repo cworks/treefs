@@ -1,6 +1,7 @@
 package net.cworks.treefs.server;
 
 import net.cworks.treefs.TreeFs;
+import net.cworks.treefs.api.HttpApi;
 import net.cworks.treefs.server.core.BodyParser;
 import net.cworks.treefs.server.core.ErrorHandler;
 import net.cworks.treefs.server.core.HeaderParser;
@@ -25,10 +26,12 @@ import java.util.Map;
  * TreeFs API operations
  *
  * Path Operations
- * Create:   POST /to/a/path/in/treefs
- * Retrieve: GET /a/path/in/treefs
- * Update:   PUT /a/path/in/treefs
- * Delete:   DELETE /a/path/in/treefs
+ *
+ * Create:   POST   /corbett/projects/house/bathroom (body contains path properties)
+ * Update:   PUT    /corbett/projects/house/bathroom (body contains path properties)
+ * Partial:  PATCH  /corbett/projects/house/bathroom (body contains partial properties)
+ * Remove:   DELETE /corbett/projects/house/bathroom
+ * Retrieve: GET    /corbett/projects/house/bathroom
  *
  * These actions don't really map into the simple HTTP verb CRUD operations (POST, GET, PUT, DELETE)
  * but are required to make the API useful.  REST purest folks only design URI(s) that are Nouns
@@ -42,24 +45,25 @@ import java.util.Map;
  * choice in TreeFs is to append certain Verbs onto the end of the Noun URI.  Each appended Verb
  * is looked upon as a sub-resource and can be managed as such.
  *
- * User sub-resource URIs, for example POST /a/path/{cp}
+ * User sub-resource URIs
  *
- * Copy:     POST /a/path/in/treefs/{cp}
- * Move:     PUT /a/path/in/treefs/{mv}
- * Meta:     GET /a/path/in/treefs/{meta}
- * Trash:    PUT /a/path/in/treefs/{trash}
+ * Copy:     POST   /corbett/projects/house/bathroom/#copy (body contains copy properties)
+ * Move:     PUT    /corbett/projects/house/bathroom/#move (body contains move properties)
+ * Meta:     GET    /corbett/projects/house/bathroom/#meta
+ * Trash:    PUT    /corbett/projects/house/bathroom/#trash
  *
- * File Operations
- * Create: POST /a/new/file/in/treefs/ChuckNorris.jpg
- * Retrieve: GET /a/new/file/in/treefs/ChuckNorris.jpg
- * Update:   PUT /a/new/file/in/treefs/ChuckNorris.jpg
- * Delete:   DELETE /a/new/file/in/treefs/ChuckNorris.jpg
+ * Leaf Operations
  *
- * Copy:     POST /a/new/file/in/treefs/ChuckNorris.jpg/{cp}
- * Move:     PUT /a/new/file/in/treefs/ChuckNorris.jpg/{mv}
- * Meta:     GET /a/new/file/in/treefs/ChuckNorris.jpg/{meta}
- * Trash:    PUT /a/new/file/in/treefs/ChuckNorris.jpg/{trash}
+ * Create:   POST   /corbett/projects/house/bathroom/plans.pdf (body contains leaf metadata)
+ * Update:   PUT    /corbett/projects/house/bathroom/plans.pdf (body contains leaf properties)
+ * Partial:  PATCH  /corbett/projects/house/bathroom/plans.pdf (body contains leaf properties)
+ * Remove:   DELETE /corbett/projects/house/bathroom/plans.pdf
+ * Retrieve: GET    /corbett/projects/house/bathroom/plans.pdf
  *
+ * Copy:     POST   /corbett/projects/house/bathroom/plans.pdf/#copy (body contains copy properties)
+ * Move:     PUT    /corbett/projects/house/bathroom/plans.pdf/#move (body contains move properties)
+ * Meta:     GET    /corbett/projects/house/bathroom/plans.pdf/#meta
+ * Trash:    PUT    /corbett/projects/house/bathroom/plans.pdf/#trash
  *
  */
 public class TreeFsServer extends Verticle {
@@ -83,6 +87,20 @@ public class TreeFsServer extends Verticle {
      * Context root of TreeFs
      */
     public static final String TREEFS_ROOT = "/treefs";
+
+    /**
+     * Api being serviced by this server
+     */
+    private HttpApi api;
+
+    /**
+     * Create this TreeFsServer instance to service the given TreeFsApi 
+     * @param api
+     */
+    public TreeFsServer(final HttpApi api) {
+        this.api = api;
+        
+    }
 
     /**
      * Startup TreeFsServer verticle which will handle IO to TreeFs
@@ -159,10 +177,10 @@ public class TreeFsServer extends Verticle {
             public void handle(Boolean status) {
                 String message = "";
                 if (status) {
-                    message = "TreeFsServer is taking flight!!!";
+                    message = "TreeFsServer is taking root!!!";
                     logger.info(message);
                 } else {
-                    message = "TreeFsServer has crashed and burned on the runway.";
+                    message = "TreeFsServer has been cut down.";
                     logger.error(message);
                 }
             }

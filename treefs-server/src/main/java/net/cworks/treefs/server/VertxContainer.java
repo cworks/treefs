@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TreeFsContainer {
+public class VertxContainer {
 
     /**
      * Logger
      */
-    public static final Logger logger = Logger.getLogger(TreeFsContainer.class);
+    public static final Logger logger = Logger.getLogger(VertxContainer.class);
 
     /**
      * StartException, thrown when something wacky happens on startup
@@ -55,7 +55,7 @@ public class TreeFsContainer {
      * private constructor, use boot to create
      * @param config
      */
-    private TreeFsContainer(JsonObject config) {
+    private VertxContainer(JsonObject config) {
 
         this.config = config;
     }
@@ -65,9 +65,9 @@ public class TreeFsContainer {
      * @param config
      * @return
      */
-    public static TreeFsContainer newContainer(JsonObject config) {
+    public static VertxContainer newContainer(JsonObject config) {
 
-        TreeFsContainer container = new TreeFsContainer(config);
+        VertxContainer container = new VertxContainer(config);
         return container;
     }
 
@@ -75,7 +75,7 @@ public class TreeFsContainer {
      * Boot an embedded vertx container
      * @return
      */
-    public TreeFsContainer start() throws TreeFsContainer.VertxContainerException {
+    public VertxContainer start() throws VertxContainer.VertxContainerException {
 
         final String moduleName = config.getString("moduleName");
         if(TreeFsValidation.isNullOrEmpty(moduleName)) {
@@ -94,7 +94,7 @@ public class TreeFsContainer {
             classpathFiles.add(new File(entry));
         }
         if(classpathFiles.size() < 1) {
-            File f = new File(TreeFsContainer.class
+            File f = new File(VertxContainer.class
                 .getProtectionDomain()
                 .getCodeSource()
                 .getLocation().getPath());
@@ -183,7 +183,7 @@ public class TreeFsContainer {
 
         // starts a container
         try {
-            TreeFsContainer container = TreeFsContainer.newContainer(config).start();
+            VertxContainer container = VertxContainer.newContainer(config).start();
 
             try {
                 Thread.sleep(1000 * 60);

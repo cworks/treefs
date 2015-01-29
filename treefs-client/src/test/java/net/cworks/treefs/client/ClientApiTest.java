@@ -1,6 +1,6 @@
 package net.cworks.treefs.client;
 
-import net.cworks.treefs.server.TreeFsContainer;
+import net.cworks.treefs.server.VertxContainer;
 import net.cworks.treefs.domain.TreeFsFile;
 import net.cworks.treefs.domain.TreeFsFolder;
 import net.cworks.treefs.domain.TreeFsPath;
@@ -21,7 +21,7 @@ public class ClientApiTest {
      * dependency on treefs-server because of this which is fine but in no way should
      * treefs-client have a compile time dependency on treefs-server.
      */
-    static TreeFsContainer container = null;
+    static VertxContainer container = null;
 
     static Config createConfig() {
         Config config = new Config() {
