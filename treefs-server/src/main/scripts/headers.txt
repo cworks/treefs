@@ -1,7 +1,4 @@
-HTTP/1.1 100 Continue
-
-HTTP/1.1 200 OK
+HTTP/1.1 404 Not Found
 x-powered-by: HttpModule
-Content-Type: application/json
-Content-Length: 114
+Content-Length: 0
 

@@ -86,21 +86,7 @@ public class TreeFsServer extends Verticle {
     /**
      * Context root of TreeFs
      */
-    public static final String TREEFS_ROOT = "/treefs";
-
-    /**
-     * Api being serviced by this server
-     */
-    private HttpApi api;
-
-    /**
-     * Create this TreeFsServer instance to service the given TreeFsApi 
-     * @param api
-     */
-    public TreeFsServer(final HttpApi api) {
-        this.api = api;
-        
-    }
+    public static final String TREEFS_ROOT = "/";
 
     /**
      * Startup TreeFsServer verticle which will handle IO to TreeFs

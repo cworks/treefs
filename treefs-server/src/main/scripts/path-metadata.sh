@@ -11,4 +11,4 @@ curl --dump-header headers.txt \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
-http://$address:$port/$treefsroot/$fsid/$treefspath/meta
+http://$address:$port/$fsid/$treefspath/meta

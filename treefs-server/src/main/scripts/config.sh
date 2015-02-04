@@ -22,7 +22,7 @@ clientid="corbofett"
 # ================================
 # top-level route for treefs requests
 # ================================
-treefsroot="treefs"
+treefsroot=""
 
 # ==========================================
 # under the top-level route are file-systems
