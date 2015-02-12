@@ -6,7 +6,7 @@ dependencies {
     compile("org.apache.httpcomponents:httpcore:4.3.2")
     compile("org.apache.httpcomponents:httpmime:4.3.2")
 
-    compile("net-cworks:json:1.1")
+    compile("cworks:json:1.3")
     compile("net-cworks:http:1.1")
 
     compile(project(":treefs-domain"))

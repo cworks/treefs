@@ -68,7 +68,7 @@ dependencies {
     compile(project(":treefs-sp"))
     compile(project(":treefs-syssp"))
     compile(project(":treefs-core"))
-    compile("net-cworks:json:1.1")
+    compile("cworks:json:1.3")
     compile("net-cworks:http:1.1")
     compile("log4j:log4j:1.2.17")
     compile("com.sparkjava:spark-core:2.1")

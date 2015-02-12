@@ -15,3 +15,7 @@ webroot
 .gradle
 build
 out
+uploads
+logs
+downloads
+treefs-data

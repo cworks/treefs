@@ -5,5 +5,6 @@ include "treefs-domain"
 include "treefs-client"
 include "treefs-core"
 include "treefs-server"
+include "treefs-awssp"
 
 rootProject.name="treefs"
