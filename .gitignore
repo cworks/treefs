@@ -21,3 +21,5 @@ downloads
 treefs-data
 
 treefs-awssp/src/main/resources/AwsCredentials.properties
+treefs-awssp/src/test/resources/AwsCredentials.properties
+
