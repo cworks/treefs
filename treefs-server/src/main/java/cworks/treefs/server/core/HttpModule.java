@@ -309,7 +309,7 @@ public class HttpModule {
                 // add x-powered-by header is enabled
                 Boolean poweredBy = request.get("x-powered-by");
                 if (poweredBy != null && poweredBy) {
-                    request.response().putHeader("x-powered-by", "HttpModule");
+                    request.response().putHeader("x-powered-by", "TreeFs");
                 }
 
                 // add json content type (TODO don't like hard coding this here)

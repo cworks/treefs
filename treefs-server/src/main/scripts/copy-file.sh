@@ -14,4 +14,4 @@ curl -i -v \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
 -X POST --data "{\"target\":\"$targetPath\"}" \
-http://$address:$port/$treefsroot/$fsid/$sourcePath/cp
+http://$address:$port/$sourcePath/cp

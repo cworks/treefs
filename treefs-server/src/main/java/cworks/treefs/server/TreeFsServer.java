@@ -3,12 +3,12 @@ package cworks.treefs.server;
 import cworks.treefs.TreeFs;
 import cworks.treefs.server.core.BodyParser;
 import cworks.treefs.server.core.ErrorHandler;
-import cworks.treefs.server.core.HeaderParser;
 import cworks.treefs.server.core.HttpModule;
 import cworks.treefs.server.core.HttpRouter;
-import cworks.treefs.server.handler.FileSystemHandler;
+import cworks.treefs.server.handler.AuthorizationService;
+import cworks.treefs.server.handler.FileSystemService;
 import cworks.treefs.server.handler.HttpServices;
-import cworks.treefs.server.handler.UriHandler;
+import cworks.treefs.server.handler.UriService;
 import org.apache.log4j.Logger;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.VertxException;
@@ -120,30 +120,30 @@ public class TreeFsServer extends Verticle {
         HttpModule module = new HttpModule(this, TREEFS_ROOT);
 
         module.use(new ErrorHandler(false))
-            .use(new UriHandler())
-            .use(new HeaderParser())
-            .use(new FileSystemHandler())
+            .use(new UriService())
+            .use(new AuthorizationService())
+            .use(new FileSystemService())
             .use(new BodyParser(TreeFs.uploadDir()));
 
         // sub-resource need to come before actual resources so matching works...need to fix this
-        module.use(new HttpRouter().get("/:fs/.*/meta$",
+        module.use(new HttpRouter().get("/.*/meta$",
             HttpServices.metadataService()));
-        module.use(new HttpRouter().delete("/:fs/.*/trash$",
+        module.use(new HttpRouter().delete("/.*/trash$",
             HttpServices.trashPathService()));
-        module.use(new HttpRouter().post("/:fs/.*/cp$",
+        module.use(new HttpRouter().post("/.*/cp$",
             HttpServices.copyService()));
-        module.use(new HttpRouter().put("/:fs/.*/mv$",
+        module.use(new HttpRouter().put("/.*/mv$",
             HttpServices.moveService()));
 
         // main resources
-        module.use(new HttpRouter().post("/:fs/.*",
+        module.use(new HttpRouter().post("/.*",
             HttpServices.createPathService()));
-        module.use(new HttpRouter().get("/:fs/.*",
+        module.use(new HttpRouter().get("/.*",
             HttpServices.readPathService()));
-        // module.use(new HttpRouter().put("/:fs/.*",
-        //    HttpServices.updatePathService()));
-        module.use(new HttpRouter().delete("/:fs/.*",
-            HttpServices.deleteService()));
+        module.use(new HttpRouter().put("/.*",
+           HttpServices.updatePathService()));
+        module.use(new HttpRouter().delete("/.*",
+                HttpServices.deleteService()));
 
         // siege service is a simple load testing hook
         module.use("/siege",

@@ -51,7 +51,7 @@ public class TreeFsStorageManager {
     /**
      * create a cache of clients to StorageProvider(s)
      */
-    private static Map<String, JsonObject> spCache = null;
+    private static Map<String, JsonObject> providerCache = _newStorageProviderCache(13);
 
     /**
      * Callers should use {@link #create(cworks.treefs.TreeFsClient)}
@@ -60,7 +60,6 @@ public class TreeFsStorageManager {
     private TreeFsStorageManager(TreeFsClient client) {
         this.client = client;
         this.provider = StorageProviderFactory.createProvider(this.client);
-        this.spCache = _newStorageProviderCache(13);
     }
 
     /**
@@ -621,7 +620,7 @@ public class TreeFsStorageManager {
      */
     public static TreeFsStorageManager storageManager(TreeFsClient client) {
 
-        if(!spCache.containsKey(client.id())) {
+        if(!providerCache.containsKey(client.id())) {
             return null;
         }
 
@@ -634,7 +633,7 @@ public class TreeFsStorageManager {
      * @param capacity
      * @return
      */
-    Map<String, JsonObject> _newStorageProviderCache(final int capacity) {
+    static Map<String, JsonObject> _newStorageProviderCache(final int capacity) {
         Map<String, JsonObject> spCache =
             new LinkedHashMap<String, JsonObject>(capacity + 1, .75F, true) {
                 // This method is called just after a new entry has been added

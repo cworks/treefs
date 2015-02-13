@@ -11,37 +11,37 @@ public class HttpServices {
 
     public static HttpService createPathService() {
 
-        return new CreatePathHttpService();
+        return new PathService();
     }
 
     public static HttpService readPathService() {
 
-        return new FetchPathHttpService();
+        return new FetchPathService();
     }
 
     public static HttpService updatePathService() {
 
-        return null;
+        return new NullService();
     }
 
     public static HttpService trashPathService() {
 
-        return new TrashHandler();
+        return new TrashService();
     }
 
     public static HttpService metadataService() {
 
-        return new MetadataHandler();
+        return new MetadataService();
     }
 
     public static HttpService copyService() {
 
-        return new CopyHandler();
+        return new CopyService();
     }
 
     public static HttpService deleteService() {
 
-        return new DeleteHandler();
+        return new DeleteService();
     }
 
     public static HttpService moveService() {
@@ -51,7 +51,7 @@ public class HttpServices {
 
     public static HttpService siegeService() {
 
-        return new SiegeHttpService();
+        return new SiegeService();
     }
 
     public static HttpService worker(Work work) {

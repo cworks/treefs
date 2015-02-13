@@ -27,7 +27,7 @@ public class CreateFolderHandler extends HttpService {
         payload.setString("type", "folder");
 
         if(!isNull(event.path())) {
-            String path = UriHandler.treefsPath(mount, event.path());
+            String path = UriService.treefsPath(mount, event.path());
             payload.setString("path", path);
         } else {
             // continue to next handler

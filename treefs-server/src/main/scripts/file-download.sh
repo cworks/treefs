@@ -12,4 +12,4 @@ saveAsFile=$2
 curl --dump-header headers.txt -o $saveAsFile \
 -H "Accept: application/json" \
 -H "treefs-client: $clientid" \
-http://$address:$port/$treefsroot/$fsid/$treefspath
+http://$address:$port/$treefspath

@@ -2,33 +2,34 @@ package cworks.treefs.server.handler;
 
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
+import cworks.treefs.TreeFsValidation;
+import cworks.treefs.server.core.HttpServiceRequest;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
 import org.vertx.java.core.Handler;
 
-import static cworks.treefs.TreeFsValidation.isNull;
-
 /**
- * HttpService that handles permanently deleting folders and files from TreeFs
+ * Download a file from TreeFs
  * @author comartin
  */
-public class DeleteHandler extends HttpService {
+public class DownloadService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
-        if(!isNull(event.path())) {
-            String path = UriHandler.treefsPath(mount, event.path());
+        if(!TreeFsValidation.isNull(event.path())) {
+            String path = UriService.treefsPath(mount, event.path(), "/content");
             payload.setString("path", path);
         } else {
-            // continue to next handler
+            // to next service
             next.handle(null);
         }
 
-        TreeFs.storageManager(client).deletePath(payload.getString("path"));
-        event.response().setStatusCode(200).end();
+        /*
+         * send file to client...
+         */
+        event.response().sendFile(TreeFs.storageManager(client)
+            .retrieveFile(payload.getString("path")));
     }
-
 }

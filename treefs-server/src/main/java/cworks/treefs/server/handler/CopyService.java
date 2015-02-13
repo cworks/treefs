@@ -16,7 +16,7 @@ import org.vertx.java.core.Handler;
  *
  * @author comartin
  */
-public class CopyHandler extends HttpService {
+public class CopyService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
@@ -24,7 +24,7 @@ public class CopyHandler extends HttpService {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {
-            String source = UriHandler.treefsPath(mount, event.path(), "/cp");
+            String source = UriService.treefsPath(mount, event.path(), "/cp");
             logger.debug("copyHandler on sourcePath: " + source);
             payload.setString("source", source);
         } else {

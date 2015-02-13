@@ -8,7 +8,7 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
 
 
-public class SiegeHttpService extends HttpService {
+public class SiegeService extends HttpService {
 
     @Override
     public void handle(final HttpServiceRequest request, final Handler<Object> next) {

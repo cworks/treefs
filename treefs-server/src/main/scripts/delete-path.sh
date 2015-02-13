@@ -11,4 +11,4 @@ curl -i -v \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
--X DELETE http://$address:$port/$treefsroot/$fsid/$treefspath
+-X DELETE http://$address:$port/$treefspath

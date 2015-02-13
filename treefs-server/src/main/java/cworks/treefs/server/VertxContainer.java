@@ -82,9 +82,6 @@ public class VertxContainer {
             throw new IllegalArgumentException("moduleName is required to boot VertxContainer");
         }
 
-        final Integer port = config.getInteger("port", 4444);
-        final String host = config.getString("host", "localhost");
-
         JsonArray arr = config.getArray("classpath");
         List<File> classpathFiles = new ArrayList<File>();
 
@@ -175,22 +172,24 @@ public class VertxContainer {
         config.putString("moduleName", "treefs-server~treefs-server~SNAPSHOT");
         config.putNumber("port", 4444);
         config.putString("host", "localhost");
+        config.putString("treefs.clients", "build/resources/main/treefsclients.json");
         JsonArray classpath = new JsonArray(new String[]{
             "build/mods/treefs-server~treefs-server~SNAPSHOT",
             "build/mods/treefs-server~treefs-server~SNAPSHOT/lib/*"
         });
         config.putArray("classpath", classpath);
+        // configure individual verticles
         JsonArray verticles = new JsonArray();
         verticles.addObject(new JsonObject()
                 .putString("verticle", "TreeFsServer")
                 .putString("type", "standard")
                 .putNumber("instances", 1));
         verticles.addObject(new JsonObject()
-                .putString("verticle", "SiegeApp")
+                .putString("verticle", "cworks.treefs.server.handler.SiegeApp")
                 .putString("type", "worker")
                 .putNumber("instances", 7));
         verticles.addObject(new JsonObject()
-                .putString("verticle", "Worker")
+                .putString("verticle", "cworks.treefs.server.worker.Worker")
                 .putString("type", "worker")
                 .putNumber("instances", 20));
         config.putArray("verticles", verticles);
@@ -198,7 +197,6 @@ public class VertxContainer {
         // starts a container
         try {
             VertxContainer container = VertxContainer.newContainer(config).start();
-
             try {
                 Thread.sleep(1000 * 60);
             } catch (InterruptedException ex) {

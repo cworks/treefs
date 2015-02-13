@@ -26,7 +26,7 @@ import java.util.Map;
  * HttpService than handles uploading files into TreeFs
  * @author comartin
  */
-public class UploadHandler extends HttpService {
+public class UploadService extends HttpService {
 
     public void handle(final HttpServiceRequest event, Handler<Object> next) {
 
@@ -77,7 +77,7 @@ public class UploadHandler extends HttpService {
             /*
              * set the relative path for this upload
              */
-            String path = UriHandler.treefsPath(mount, event.path(), "/content");
+            String path = UriService.treefsPath(mount, event.path(), "/content");
             payload.setString("path", path);
 
             /**

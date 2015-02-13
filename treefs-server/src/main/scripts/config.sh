@@ -17,14 +17,4 @@ port=4444
 # treefs clients must have a valid treefs-client (id)
 # =============================================
 clientid="corbofett"
-#clientid="treefss3user"
-
-# ================================
-# top-level route for treefs requests
-# ================================
-treefsroot=""
-
-# ==========================================
-# under the top-level route are file-systems
-# ==========================================
-fsid="default"
+#clientid="awsuser"

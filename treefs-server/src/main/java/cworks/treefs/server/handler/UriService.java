@@ -10,9 +10,10 @@ import org.vertx.java.core.Handler;
 /**
  * HttpService to check that URI meets TreeFs requirements, also contains general package-private
  * utility method for use by other HttpServices in this package.
+ *
  * @author comartin
  */
-public class UriHandler extends HttpService {
+public class UriService extends HttpService {
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
         if(TreeFsValidation.isNull(event.path())) {
@@ -30,7 +31,7 @@ public class UriHandler extends HttpService {
      * @return
      */
     static String removeMount(String mount, String uri) {
-        return uri.substring(mount.length() + 1);
+        return uri.substring(mount.length());
     }
 
     /**
@@ -45,16 +46,10 @@ public class UriHandler extends HttpService {
             throw new TreeFsException("path cannot be null or empty");
         }
         String fs = removeMount(mount, path);
-        String[] parts = fs.split("/");
-        String treefsPath = null;
-        if(parts != null && parts.length > 0) {
-            treefsPath = fs.substring(parts[0].length() + 1);
-        }
-
         if(TreeFsValidation.isNullOrEmpty(op)) {
-            return treefsPath;
+            return fs;
         } else {
-            return treefsPath.replace(op, "");
+            return fs.replace(op, "");
         }
     }
 

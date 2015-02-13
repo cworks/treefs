@@ -36,7 +36,7 @@ import static cworks.treefs.common.ObjectUtils.isNullOrEmpty;
  * requests.
  *
  * AWS javadoc
- * @link http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/
+ * http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/
  *
  * @author comartin
  */

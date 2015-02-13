@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author comartin
  */
-public class MetadataHandler extends HttpService {
+public class MetadataService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
@@ -24,7 +24,7 @@ public class MetadataHandler extends HttpService {
 
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {
-            String path = UriHandler.treefsPath(mount, event.path(), "/meta");
+            String path = UriService.treefsPath(mount, event.path(), "/meta");
             payload.setString("path", path);
         } else {
             // try next HttpService

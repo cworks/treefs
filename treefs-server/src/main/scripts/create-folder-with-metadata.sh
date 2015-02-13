@@ -12,4 +12,4 @@ curl -i -v \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
 -X POST --data '{"description":"A folder of random stuff", "metadata":{"someString":"Happy Happy Happy", "someNumber":100, "someArray":["apples", "bananas", "blueberries"], "someObject": {"name":"Chuck Norris", "Occupation":"Bustin Heads"}}}' \
-http://$address:$port/$treefsroot/$fsid/$treefspath
+http://$address:$port/$treefspath

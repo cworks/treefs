@@ -15,14 +15,14 @@ import org.vertx.java.core.Handler;
  * HttpService that handles retrieving information about a folder in TreeFs
  * @author comartin
  */
-public class RetrieveFolderHandler extends HttpService {
+public class RetrieveFolderService extends HttpService {
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
 
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {
-            String path = UriHandler.treefsPath(mount, event.path());
+            String path = UriService.treefsPath(mount, event.path());
             payload.setString("path", path);
         } else {
             next.handle(null);

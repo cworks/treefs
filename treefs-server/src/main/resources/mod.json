@@ -1,4 +1,4 @@
 {
 
-    "main": "net.cworks.treefs.server.MainVerticle"
+    "main": "cworks.treefs.server.MainVerticle"
 }

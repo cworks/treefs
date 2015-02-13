@@ -14,4 +14,4 @@ curl -i -v \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
 -X PUT --data "{\"target\":\"$targetPath\", \"moveOptions\":[\"recursive\", \"into\"]}" \
-http://$address:$port/$treefsroot/$fsid/$sourcePath/mv
+http://$address:$port/$sourcePath/mv

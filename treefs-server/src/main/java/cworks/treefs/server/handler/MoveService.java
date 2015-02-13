@@ -23,7 +23,7 @@ public class MoveService extends HttpService {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {
-            String source = UriHandler.treefsPath(mount, event.path(), "/mv");
+            String source = UriService.treefsPath(mount, event.path(), "/mv");
             logger.debug("moveService on sourcePath: " + source);
             payload.setString("source", source);
         } else {

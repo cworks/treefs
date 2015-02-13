@@ -1,5 +1,8 @@
 package cworks.treefs;
 
+import cworks.json.Json;
+import cworks.json.JsonArray;
+import cworks.json.JsonObject;
 import cworks.treefs.provider.TreeFsStorageManager;
 
 import java.io.File;
@@ -159,12 +162,29 @@ public final class TreeFs {
         return manager;
     }
 
+    /**
+     * Create a TreeFsClient if the given clientId is valid.
+     * @param clientId
+     * @return
+     */
     public static TreeFsClient client(String clientId) {
 
         if(clientId == null) {
             throw new IllegalArgumentException("clientId cannot be null");
         }
-        return new TreeFsClient(clientId);
+
+        JsonObject config = Json.asObject(new File(stringValue("treefs.clients")));
+        JsonArray clients = config.getArray("clients");
+        for(Object o : clients) {
+            JsonObject client = (JsonObject)o;
+            if(clientId.equals(client.getString("id"))) {
+                return new TreeFsClient(
+                    client.getString("id"),
+                    client.getBoolean("enabled"));
+            }
+        }
+
+        return null;
     }
 
     public static String clientHeader() {

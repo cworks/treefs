@@ -16,8 +16,8 @@ fi
 MOD_NAME=treefs-server\~treefs-server\~SNAPSHOT
 TREEFS_MOD=build/mods/$MOD_NAME
 
-VERTX_OPTS="-Xms2048M -Xmx4096M -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 "
-export VERTX_OPTS
+JAVA_OPTS="-Xms2048M -Xmx4096M -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 "
+export JAVA_OPTS
 
 export CLASSPATH=build/mods/treefs-server\~treefs-server\~SNAPSHOT:build/mods/treefs-server\~treefs-server\~SNAPSHOT/lib/*
 
@@ -32,15 +32,13 @@ echo "  JAVA: $JAVA"
 echo ""
 echo "  JAVA_OPTS: $JAVA_OPTS"
 echo ""
-echo "  VERTX_OPTS: $VERTX_OPTS"
-echo ""
 echo "  CLASSPATH: $CLASSPATH"
 echo "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>"
 echo ""
 
 while true; do
    if [ "x$LAUNCH_IN_BACKGROUND" = "x" ]; then
-      eval $JAVA -cp $CLASSPATH net.cworks.treefs.server.VertxContainer
+      eval $JAVA $JAVA_OPTS -cp $CLASSPATH cworks.treefs.server.VertxContainer
       # Execute the JVM in the foreground
       TREEFS_STATUS=$?
    fi

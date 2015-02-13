@@ -19,3 +19,5 @@ uploads
 logs
 downloads
 treefs-data
+
+treefs-awssp/src/main/resources/AwsCredentials.properties

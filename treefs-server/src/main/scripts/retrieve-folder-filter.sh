@@ -13,4 +13,4 @@ curl -i -v \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
-"http://$address:$port/$treefsroot/$fsid/$treefspath?filter=$treefsfilter&depth=$treefsdepth"
+"http://$address:$port/$treefspath?filter=$treefsfilter&depth=$treefsdepth"

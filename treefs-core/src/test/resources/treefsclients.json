@@ -1,0 +1,20 @@
+{
+  "clients" : [
+    {
+      "id" : "awsuser",
+      "enabled" : false
+    },
+    {
+      "id" : "sysuser",
+      "enabled" : true
+    },
+    {
+      "id" : "treefsuser",
+      "enabled" : true
+    },
+    {
+      "id" : "corbofett",
+      "enabled" : true
+    }
+  ]
+}

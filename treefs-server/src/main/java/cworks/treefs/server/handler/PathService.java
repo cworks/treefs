@@ -29,7 +29,7 @@ import static cworks.treefs.TreeFsValidation.isNullOrEmpty;
  * Service to create a path in TreeFs
  * @author comartin
  */
-public class CreatePathHttpService extends HttpService {
+public class PathService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
@@ -39,7 +39,7 @@ public class CreatePathHttpService extends HttpService {
         JsonObject data = new JsonObject();
 
         if(!isNull(event.path())) {
-            String path = UriHandler.treefsPath(mount, event.path());
+            String path = UriService.treefsPath(mount, event.path());
             data.setString("path", path);
         } else {
             // continue to next handler because we need a path

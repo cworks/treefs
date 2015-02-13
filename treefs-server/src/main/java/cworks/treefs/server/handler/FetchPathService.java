@@ -22,7 +22,7 @@ import org.vertx.java.core.Handler;
  *
  * @author corbett
  */
-public class FetchPathHttpService extends HttpService {
+public class FetchPathService extends HttpService {
 
     /**
      * Called by the HttpModule framework
@@ -35,7 +35,7 @@ public class FetchPathHttpService extends HttpService {
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();
         if(!TreeFsValidation.isNull(request.path())) {
-            String path = UriHandler.treefsPath(mount, request.path());
+            String path = UriService.treefsPath(mount, request.path());
             data.setString("path", path);
         } else {
             next.handle(null);

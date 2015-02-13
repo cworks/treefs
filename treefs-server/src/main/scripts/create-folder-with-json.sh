@@ -11,5 +11,5 @@ curl -i -v \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
--X POST --data '{"name":"mylittlefolder"}' http://$address:$port/$treefsroot/$fsid/$treefspath
+-X POST --data '{"name":"mylittlefolder"}' http://$address:$port/$treefspath
 

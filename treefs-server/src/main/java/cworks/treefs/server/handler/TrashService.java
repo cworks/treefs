@@ -14,7 +14,7 @@ import org.vertx.java.core.Handler;
  * HttpService that moves a file or folder into the trash
  * @author comartin
  */
-public class TrashHandler extends HttpService {
+public class TrashService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest request, Handler<Object> next) {
@@ -22,7 +22,7 @@ public class TrashHandler extends HttpService {
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();
         if(!TreeFsValidation.isNull(request.path())) {
-            String path = UriHandler.treefsPath(mount, request.path(), "/trash");
+            String path = UriService.treefsPath(mount, request.path(), "/trash");
             // String path = UriHandler.treefsPath(mount, request.path());
             data.setString("path", path);
         } else {

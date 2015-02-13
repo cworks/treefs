@@ -11,13 +11,13 @@ import org.vertx.java.core.Handler;
  * HttpService that handles verifying ownership and access to a file-system in TreeFs
  * @author comartin
  */
-public class FileSystemHandler extends HttpService {
+public class FileSystemService extends HttpService {
 
     @Override
     public void handle(HttpServiceRequest event, Handler<Object> next) {
         String path = event.path();
         TreeFsClient client = event.get("client");
-        String fs = UriHandler.fileSystem(mount, path);
+        String fs = UriService.fileSystem(mount, path);
         if(!TreeFsSecurity.hasFileSystem(client, fs)) {
             next.handle(new TreeFsException("client " + client.id()
                 + " does not own a filesystem named " + fs));

@@ -3,7 +3,7 @@ description "TreeFs core library - A bunch of important stuff for TreeFs Server"
 dependencies {
 
     compile(project(":treefs-domain"))
-
+    compile(project(":treefs-awssp"))
     compile(project(":treefs-sp"))
     compile(project(":treefs-syssp"))
 
