@@ -4,7 +4,7 @@ import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.server.TreeFsServer;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import org.vertx.java.core.Handler;
 
 /**
@@ -15,7 +15,7 @@ import org.vertx.java.core.Handler;
  */
 public class UriService extends HttpService {
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<Object> next) {
         if(TreeFsValidation.isNull(event.path())) {
             next.handle(404);
         }

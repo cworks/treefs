@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * HttpServiceRequest is an implementation of Vertx's HttpServerRequest with some helper methods
+ * HttpRequest is an implementation of Vertx's HttpRequest with some helper methods
  * to make it easier to deal with common tasks.
  *
  * @author comartin
  */
-public class HttpServiceRequest implements HttpServerRequest {
+public class HttpRequest implements HttpServerRequest {
 
     private static final Comparator<String> ACCEPT_X_COMPARATOR = new Comparator<String>() {
         float getQuality(String s) {
@@ -59,7 +59,7 @@ public class HttpServiceRequest implements HttpServerRequest {
     // the original request
     private final HttpServerRequest request;
     // the wrapped response
-    private final HttpServiceResponse response;
+    private final HttpResponse response;
     // the request context
     private final Map<String, Object> context;
     // is this request secure
@@ -75,8 +75,8 @@ public class HttpServiceRequest implements HttpServerRequest {
     // control flags
     private boolean expectMultiPartCalled = false;
 
-    public HttpServiceRequest(HttpServerRequest request,
-                              HttpServiceResponse response, boolean secure, Map<String, Object> context) {
+    public HttpRequest(HttpServerRequest request,
+                       HttpResponse response, boolean secure, Map<String, Object> context) {
         this.context = context;
         this.request = request;
         this.method = request.method();
@@ -502,7 +502,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * @return
      */
     @Override
-    public HttpServiceResponse response() {
+    public HttpResponse response() {
         return response;
     }
 
@@ -570,7 +570,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * @param bodyHandler This handler will be called after all the body has been received
      */
     @Override
-    public HttpServiceRequest bodyHandler(Handler<Buffer> bodyHandler) {
+    public HttpRequest bodyHandler(Handler<Buffer> bodyHandler) {
         request.bodyHandler(bodyHandler);
         return this;
     }
@@ -592,7 +592,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * @param expect
      */
     @Override
-    public HttpServiceRequest expectMultiPart(boolean expect) {
+    public HttpRequest expectMultiPart(boolean expect) {
         // if we expect
         if (expect) {
             // then only call it once
@@ -613,7 +613,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * and so allow to get notified by the upload in progress.
      */
     @Override
-    public HttpServiceRequest uploadHandler(Handler<HttpServerFileUpload> uploadHandler) {
+    public HttpRequest uploadHandler(Handler<HttpServerFileUpload> uploadHandler) {
         request.uploadHandler(uploadHandler);
         return this;
     }
@@ -635,7 +635,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * Set a data handler. As data is read, the handler will be called with the data.
      */
     @Override
-    public HttpServiceRequest dataHandler(Handler<Buffer> handler) {
+    public HttpRequest dataHandler(Handler<Buffer> handler) {
         request.dataHandler(handler);
         return this;
     }
@@ -654,7 +654,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * Resume reading. If the {@code ReadSupport} has been paused, reading will recommence on it.
      */
     @Override
-    public HttpServiceRequest resume() {
+    public HttpRequest resume() {
         request.resume();
         return this;
     }
@@ -664,7 +664,7 @@ public class HttpServiceRequest implements HttpServerRequest {
      * this handler will be called.
      */
     @Override
-    public HttpServiceRequest endHandler(Handler<Void> endHandler) {
+    public HttpRequest endHandler(Handler<Void> endHandler) {
         request.endHandler(endHandler);
         return this;
     }
@@ -675,8 +675,13 @@ public class HttpServiceRequest implements HttpServerRequest {
      * @return
      */
     @Override
-    public HttpServiceRequest exceptionHandler(Handler<Throwable> handler) {
+    public HttpRequest exceptionHandler(Handler<Throwable> handler) {
         request.exceptionHandler(handler);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.request.method() + " " + this.request.path() + " " + this.request.query();
     }
 }

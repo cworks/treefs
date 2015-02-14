@@ -3,7 +3,7 @@ package cworks.treefs.server.handler;
 import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.common.dt.ISO8601DateParser;
 import org.vertx.java.core.Handler;
 
@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class PingService extends HttpService {
     @Override
-    public void handle(HttpServiceRequest event,
+    public void handle(HttpRequest event,
         Handler<Object> next) {
 
         JsonObject response = Json.object()

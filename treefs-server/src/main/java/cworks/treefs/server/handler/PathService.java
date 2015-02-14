@@ -1,18 +1,17 @@
 package cworks.treefs.server.handler;
 
-import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
-import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsClient;
+import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsPathExistsException;
 import cworks.treefs.domain.TreeFsFactory;
 import cworks.treefs.domain.TreeFsFile;
 import cworks.treefs.domain.TreeFsFolder;
 import cworks.treefs.domain.TreeFsPath;
 import cworks.treefs.server.core.FileUpload;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
 import org.vertx.java.core.Handler;
 
 import java.io.IOException;
@@ -32,14 +31,14 @@ import static cworks.treefs.TreeFsValidation.isNullOrEmpty;
 public class PathService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
-        TreeFsClient client = event.get("client");
+        TreeFsClient client = request.get("client");
 
         JsonObject data = new JsonObject();
 
-        if(!isNull(event.path())) {
-            String path = UriService.treefsPath(mount, event.path());
+        if(!isNull(request.path())) {
+            String path = UriService.treefsPath(mount, request.path());
             data.setString("path", path);
         } else {
             // continue to next handler because we need a path
@@ -49,33 +48,32 @@ public class PathService extends HttpService {
         TreeFsPath treefsPath = null;
 
         try {
-            if(isNull(event.files()) || event.files().size() < 1) {
+            if(isNull(request.files()) || request.files().size() < 1) {
                 // no files sent, create path only
-                treefsPath = createPath(client, event, data);
+                treefsPath = createPath(client, request, data);
             } else {
                 // create path with content
-                treefsPath = createPathWithContent(client, event, data);
+                treefsPath = createPathWithContent(client, request, data);
             }
 
             if(treefsPath != null) {
-                String encoded = Json.asString(treefsPath);
-                event.response().end(encoded);
+                request.response().end(treefsPath);
             }
 
         } catch(TreeFsPathExistsException ex) {
             // 400 Bad Request: path exists and overwrite wasn't provided
-            event.response().setStatusCode(400);
+            request.response().setStatusCode(400);
             next.handle(new TreeFsException("Path " + ex.path()
                 + " exists and overwrite option wasn't provided", ex));
         } catch(TreeFsException ex) {
-            event.response().setStatusCode(400);
+            request.response().setStatusCode(400);
             next.handle(new TreeFsException("Create Path " + data.getString("path") + " failed", ex));
         }
 
 
     }
 
-    TreeFsPath createPath(TreeFsClient client, HttpServiceRequest request, JsonObject data) {
+    TreeFsPath createPath(TreeFsClient client, HttpRequest request, JsonObject data) {
 
         data.setString("type", "folder");
 
@@ -93,7 +91,7 @@ public class PathService extends HttpService {
         return folder;
     }
 
-    TreeFsPath createPathWithContent(TreeFsClient client, HttpServiceRequest request, JsonObject data) {
+    TreeFsPath createPathWithContent(TreeFsClient client, HttpRequest request, JsonObject data) {
 
         FileUpload upload = null;
         data.setString("type", "file");

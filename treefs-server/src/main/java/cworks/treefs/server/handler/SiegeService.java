@@ -3,7 +3,7 @@ package cworks.treefs.server.handler;
 import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.Message;
 
@@ -11,7 +11,7 @@ import org.vertx.java.core.eventbus.Message;
 public class SiegeService extends HttpService {
 
     @Override
-    public void handle(final HttpServiceRequest request, final Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<Object> next) {
 
         JsonObject data = request.body();
         final Long siegeVal = data.getLong("siegeVal", 10000);

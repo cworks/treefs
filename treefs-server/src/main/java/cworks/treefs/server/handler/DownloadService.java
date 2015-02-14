@@ -3,7 +3,7 @@ package cworks.treefs.server.handler;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
@@ -15,7 +15,7 @@ import org.vertx.java.core.Handler;
 public class DownloadService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<Object> next) {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {

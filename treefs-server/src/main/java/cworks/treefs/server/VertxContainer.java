@@ -193,6 +193,7 @@ public class VertxContainer {
                 .putString("type", "worker")
                 .putNumber("instances", 20));
         config.putArray("verticles", verticles);
+        config.putBoolean("settings.response.pretty", true);
 
         // starts a container
         try {

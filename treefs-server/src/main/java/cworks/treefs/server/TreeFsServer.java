@@ -125,6 +125,16 @@ public class TreeFsServer extends Verticle {
             .use(new FileSystemService())
             .use(new BodyParser(TreeFs.uploadDir()));
 
+        // setting resource used for controlling features of TreeFs
+        module.use(new HttpRouter().post("/_settings",
+            HttpServices.settingsService()));
+        module.use(new HttpRouter().get("/_settings",
+            HttpServices.settingsService()));
+        module.use(new HttpRouter().put("/_settings",
+            HttpServices.settingsService()));
+        module.use(new HttpRouter().delete("/_settings",
+            HttpServices.settingsService()));
+
         // sub-resource need to come before actual resources so matching works...need to fix this
         module.use(new HttpRouter().get("/.*/meta$",
             HttpServices.metadataService()));
@@ -141,7 +151,7 @@ public class TreeFsServer extends Verticle {
         module.use(new HttpRouter().get("/.*",
             HttpServices.readPathService()));
         module.use(new HttpRouter().put("/.*",
-           HttpServices.updatePathService()));
+           HttpServices.placeHolderService()));
         module.use(new HttpRouter().delete("/.*",
                 HttpServices.deleteService()));
 

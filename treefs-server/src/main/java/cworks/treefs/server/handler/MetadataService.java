@@ -1,12 +1,11 @@
 package cworks.treefs.server.handler;
 
-import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsValidation;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
 import org.vertx.java.core.Handler;
 
 import java.util.Map;
@@ -19,12 +18,12 @@ import java.util.Map;
 public class MetadataService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
-        TreeFsClient client = event.get("client");
+    public void handle(HttpRequest request, Handler<Object> next) {
+        TreeFsClient client = request.get("client");
 
         JsonObject payload = new JsonObject();
-        if(!TreeFsValidation.isNull(event.path())) {
-            String path = UriService.treefsPath(mount, event.path(), "/meta");
+        if(!TreeFsValidation.isNull(request.path())) {
+            String path = UriService.treefsPath(mount, request.path(), "/meta");
             payload.setString("path", path);
         } else {
             // try next HttpService
@@ -35,10 +34,10 @@ public class MetadataService extends HttpService {
         Map<String, Object> metadata = TreeFs.storageManager(client)
             .retrieveMetadata(payload.getString("path"));
         if(!TreeFsValidation.isNull(metadata)) {
-            event.response().end(Json.asString(metadata));
+            request.response().end(metadata);
         } else {
             // No metadata found
-            event.response().setStatusCode(404).end();
+            request.response().setStatusCode(404).end();
         }
     }
 }

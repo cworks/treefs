@@ -21,7 +21,7 @@ public class HttpServices {
 
     public static HttpService updatePathService() {
 
-        return new NullService();
+        return new PlaceHolderService();
     }
 
     public static HttpService trashPathService() {
@@ -63,5 +63,15 @@ public class HttpServices {
     public static HttpService pingService() {
 
         return new PingService();
+    }
+
+    public static HttpService placeHolderService() {
+
+        return new PlaceHolderService();
+    }
+
+    public static HttpService settingsService() {
+
+        return new SettingsService();
     }
 }

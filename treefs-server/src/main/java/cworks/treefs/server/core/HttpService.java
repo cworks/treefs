@@ -64,6 +64,6 @@ public abstract class HttpService {
      * @param request
      * @param next
      */
-    public abstract void handle(final HttpServiceRequest request, final Handler<Object> next);
+    public abstract void handle(final HttpRequest request, final Handler<Object> next);
 
 }

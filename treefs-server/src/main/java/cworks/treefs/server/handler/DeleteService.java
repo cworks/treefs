@@ -4,7 +4,7 @@ import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import org.vertx.java.core.Handler;
 
 import static cworks.treefs.TreeFsValidation.isNull;
@@ -16,7 +16,7 @@ import static cworks.treefs.TreeFsValidation.isNull;
 public class DeleteService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<Object> next) {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!isNull(event.path())) {

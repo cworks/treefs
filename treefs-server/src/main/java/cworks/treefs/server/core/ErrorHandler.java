@@ -49,8 +49,8 @@ public class ErrorHandler extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpServiceRequest request, Handler<Object> next) {
-        HttpServiceResponse response = request.response();
+    public void handle(HttpRequest request, Handler<Object> next) {
+        HttpResponse response = request.response();
 
         //
         // if we've been asked to handle an error condition yet the status code
@@ -148,8 +148,8 @@ public class ErrorHandler extends HttpService {
     private int _errorCode(Object error) {
         if (error instanceof Number) {
             return ((Number)error).intValue();
-        } else if (error instanceof HttpServiceException) {
-            return ((HttpServiceException)error).getErrorCode().intValue();
+        } else if (error instanceof HttpException) {
+            return ((HttpException)error).getErrorCode().intValue();
         } else {
             return 500;
         }

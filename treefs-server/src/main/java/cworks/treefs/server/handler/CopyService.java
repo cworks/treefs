@@ -1,14 +1,13 @@
 package cworks.treefs.server.handler;
 
-import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
 import cworks.treefs.domain.TreeFsPath;
+import cworks.treefs.server.core.HttpRequest;
+import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
 
 /**
@@ -19,12 +18,12 @@ import org.vertx.java.core.Handler;
 public class CopyService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
-        TreeFsClient client = event.get("client");
+        TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
-        if(!TreeFsValidation.isNull(event.path())) {
-            String source = UriService.treefsPath(mount, event.path(), "/cp");
+        if(!TreeFsValidation.isNull(request.path())) {
+            String source = UriService.treefsPath(mount, request.path(), "/cp");
             logger.debug("copyHandler on sourcePath: " + source);
             payload.setString("source", source);
         } else {
@@ -32,8 +31,8 @@ public class CopyService extends HttpService {
             next.handle(null);
         }
 
-        if(event.hasBody()) {
-            JsonObject body = event.body();
+        if(request.hasBody()) {
+            JsonObject body = request.body();
             payload.merge(body);
         }
 
@@ -44,7 +43,7 @@ public class CopyService extends HttpService {
         );
 
         if(!TreeFsValidation.isNull(path)) {
-            event.response().end(Json.asString(path));
+            request.response().end(path);
         } else {
             next.handle(new TreeFsException(
                 "unable to copy source path: " + payload.getString("source") +

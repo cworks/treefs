@@ -194,10 +194,10 @@ public class HttpModule {
      * @param handler
      * @return
      */
-    public HttpModule use(String route, final Handler<HttpServiceRequest> handler) {
+    public HttpModule use(String route, final Handler<HttpRequest> handler) {
         serviceList.add(new MountedHttpService(route, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         }));
@@ -210,7 +210,7 @@ public class HttpModule {
      * @param handler
      * @return
      */
-    public HttpModule use(Handler<HttpServiceRequest> handler) {
+    public HttpModule use(Handler<HttpRequest> handler) {
         return use(mount, handler);
     }
 
@@ -305,7 +305,7 @@ public class HttpModule {
             public void handle(HttpServerRequest req) {
 
                 // decorate http request with httpService stuff
-                final HttpServiceRequest request = _wrap(req, secure);
+                final HttpRequest request = _wrap(req, secure);
                 // add x-powered-by header is enabled
                 Boolean poweredBy = request.get("x-powered-by");
                 if (poweredBy != null && poweredBy) {
@@ -324,9 +324,7 @@ public class HttpModule {
                         if(isNull(error)) {
                             currentService++;
                             if (currentService < serviceList.size()) {
-                                MountedHttpService mountedHttpService = serviceList
-                                    .get(currentService);
-
+                                MountedHttpService mountedHttpService = serviceList.get(currentService);
                                 if(request.path().startsWith(mountedHttpService.mount)) {
                                     HttpService ms = mountedHttpService.httpService;
                                     try {
@@ -366,8 +364,8 @@ public class HttpModule {
                                     // if it was set as the error object use it
                                     if (error instanceof Number) {
                                         errorCode = ((Number) error).intValue();
-                                    } else if (error instanceof HttpServiceException) {
-                                        errorCode = ((HttpServiceException) error).getErrorCode().intValue();
+                                    } else if (error instanceof HttpException) {
+                                        errorCode = ((HttpException) error).getErrorCode().intValue();
                                     } else {
                                         // default error code
                                         errorCode = 500;
@@ -390,16 +388,16 @@ public class HttpModule {
     }
 
     /**
-     * Internal method that wraps a Vertx request with a HttpServiceRequest and pairs a
-     * HttpServiceResponse with a HttpServiceRequest
+     * Internal method that wraps a Vertx request with a HttpRequest and pairs a
+     * HttpResponse with a HttpRequest
      * @param request
      * @param secure - set to true if using SSL
      * @return
      */
-    private HttpServiceRequest _wrap(HttpServerRequest request, boolean secure) {
+    private HttpRequest _wrap(HttpServerRequest request, boolean secure) {
         // the context map is shared with all HttpServices
         final Map<String, Object> context = new Context(defaultContext);
-        HttpServiceResponse response = new HttpServiceResponse(request.response(), context);
-        return new HttpServiceRequest(request, response, secure, context);
+        HttpResponse response = new HttpResponse(request.response(), context);
+        return new HttpRequest(request, response, secure, context);
     }
 }

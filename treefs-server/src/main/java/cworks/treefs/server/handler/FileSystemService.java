@@ -2,7 +2,7 @@ package cworks.treefs.server.handler;
 
 import cworks.treefs.TreeFsException;
 import cworks.treefs.security.TreeFsSecurity;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
@@ -14,7 +14,7 @@ import org.vertx.java.core.Handler;
 public class FileSystemService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<Object> next) {
         String path = event.path();
         TreeFsClient client = event.get("client");
         String fs = UriService.fileSystem(mount, path);

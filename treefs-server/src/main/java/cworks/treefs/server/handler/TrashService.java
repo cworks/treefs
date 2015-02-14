@@ -5,7 +5,7 @@ import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsFolderNotEmptyException;
 import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
@@ -17,7 +17,7 @@ import org.vertx.java.core.Handler;
 public class TrashService extends HttpService {
 
     @Override
-    public void handle(HttpServiceRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();

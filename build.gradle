@@ -23,14 +23,6 @@ allprojects {
         providedRuntime
     }
 
-    if (profile == 'prod') {
-        apply from: "${rootProject.projectDir}/profile_prod.gradle"
-    } else if(profile == 'qa') {
-        apply from: "${rootProject.projectDir}/profile_qa.gradle"
-    } else {
-        apply from: "${rootProject.projectDir}/profile_dev.gradle"
-    }
-
     /*
      * Actual dependencies available by default to all projects managed by this build
      */

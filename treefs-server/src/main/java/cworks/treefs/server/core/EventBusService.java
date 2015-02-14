@@ -20,7 +20,7 @@ public class EventBusService extends HttpService {
      * @param request
      * @param next
      */
-    public void handle(final HttpServiceRequest request, final Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<Object> next) {
 
         JsonObject data = new JsonObject();
         vertx.eventBus().send("worker", data, new Handler<Message<JsonObject>>() {

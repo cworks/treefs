@@ -36,8 +36,8 @@ public class HttpRouter extends HttpService {
 
     // @example
     //      new HttpRouter() {{
-    //        get("/hello", new Handler<HttpServiceRequest>() {
-    //          public void handle(HttpServiceRequest request) {
+    //        get("/hello", new Handler<HttpRequest>() {
+    //          public void handle(HttpRequest request) {
     //            request.response().end("Hello World!");
     //          }
     //        });
@@ -91,7 +91,7 @@ public class HttpRouter extends HttpService {
     }
 
     @Override
-    public void handle(HttpServiceRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
         switch (request.method()) {
             case "GET":
@@ -141,10 +141,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter get(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter get(String pattern, final Handler<HttpRequest> handler) {
         return get(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -167,10 +167,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter put(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter put(String pattern, final Handler<HttpRequest> handler) {
         return put(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -193,10 +193,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter post(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter post(String pattern, final Handler<HttpRequest> handler) {
         return post(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -219,10 +219,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter delete(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter delete(String pattern, final Handler<HttpRequest> handler) {
         return delete(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -245,10 +245,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter options(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter options(String pattern, final Handler<HttpRequest> handler) {
         return options(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -271,10 +271,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter head(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter head(String pattern, final Handler<HttpRequest> handler) {
         return head(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -297,10 +297,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter trace(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter trace(String pattern, final Handler<HttpRequest> handler) {
         return trace(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -323,10 +323,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter connect(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter connect(String pattern, final Handler<HttpRequest> handler) {
         return connect(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -349,10 +349,10 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter patch(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter patch(String pattern, final Handler<HttpRequest> handler) {
         return patch(pattern, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -381,7 +381,7 @@ public class HttpRouter extends HttpService {
      * @param pattern The simple pattern
      * @param handler The HttpService to call
      */
-    public HttpRouter all(String pattern, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter all(String pattern, final Handler<HttpRequest> handler) {
         get(pattern, handler);
         put(pattern, handler);
         post(pattern, handler);
@@ -411,10 +411,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter get(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter get(Pattern regex, final Handler<HttpRequest> handler) {
         return get(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -437,10 +437,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter put(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter put(Pattern regex, final Handler<HttpRequest> handler) {
         return put(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -463,10 +463,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter post(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter post(Pattern regex, final Handler<HttpRequest> handler) {
         return post(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -489,10 +489,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter delete(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter delete(Pattern regex, final Handler<HttpRequest> handler) {
         return delete(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -515,10 +515,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter options(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter options(Pattern regex, final Handler<HttpRequest> handler) {
         return options(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -541,10 +541,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter head(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter head(Pattern regex, final Handler<HttpRequest> handler) {
         return head(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -567,10 +567,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter trace(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter trace(Pattern regex, final Handler<HttpRequest> handler) {
         return trace(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -593,10 +593,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter connect(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter connect(Pattern regex, final Handler<HttpRequest> handler) {
         return connect(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -619,10 +619,10 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter patch(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter patch(Pattern regex, final Handler<HttpRequest> handler) {
         return patch(regex, new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 handler.handle(request);
             }
         });
@@ -651,7 +651,7 @@ public class HttpRouter extends HttpService {
      * @param regex A regular expression
      * @param handler The HttpService to call
      */
-    public HttpRouter all(Pattern regex, final Handler<HttpServiceRequest> handler) {
+    public HttpRouter all(Pattern regex, final Handler<HttpRequest> handler) {
         get(regex, handler);
         put(regex, handler);
         post(regex, handler);
@@ -674,7 +674,7 @@ public class HttpRouter extends HttpService {
     public HttpRouter param(final String paramName, final Pattern regex) {
         return param(paramName, new HttpService() {
             @Override
-            public void handle(final HttpServiceRequest request, final Handler<Object> next) {
+            public void handle(final HttpRequest request, final Handler<Object> next) {
                 if (!regex.matcher(request.params().get(paramName)).matches()) {
                     // Bad Request
                     next.handle(400);
@@ -728,7 +728,7 @@ public class HttpRouter extends HttpService {
         bindings.add(binding);
     }
 
-    private void route(final HttpServiceRequest request, final Handler<Object> next, final List<PatternBinding> bindings) {
+    private void route(final HttpRequest request, final Handler<Object> next, final List<PatternBinding> bindings) {
         for (final PatternBinding binding: bindings) {
             // TODO: use normalized path?
             final Matcher m = binding.pattern.matcher(request.path());
@@ -791,7 +791,7 @@ public class HttpRouter extends HttpService {
     private static HttpService wrap(final Object o, final Method m, final boolean simple, final String[] consumes, final String[] produces) {
         return new HttpService() {
             @Override
-            public void handle(HttpServiceRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<Object> next) {
                 try {
                     // we only know how to process certain media types
                     if (consumes != null) {

@@ -50,7 +50,7 @@ public class BodyParser extends HttpService {
      * @param next
      */
     @Override
-    public void handle(final HttpServiceRequest request, final Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<Object> next) {
         final String method = request.method();
 
         // GET and HEAD have no setBody
@@ -139,12 +139,12 @@ public class BodyParser extends HttpService {
     }
 
     /**
-     * Parse JSON request bodies int the HttpServiceRequest.body
+     * Parse JSON request bodies int the HttpRequest.body
      * @param request
      * @param buffer
      * @param next
      */
-    private void parseJson(final HttpServiceRequest request, final Buffer buffer,
+    private void parseJson(final HttpRequest request, final Buffer buffer,
         final Handler<Object> next) {
         try {
             String content = buffer.toString();

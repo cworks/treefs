@@ -14,62 +14,66 @@ import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.java.core.streams.Pump;
 import org.vertx.java.core.streams.ReadStream;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * HttpServiceResponse is an implementation of Vertx's HttpServerResponse with some helper
+ * HttpResponse is an implementation of Vertx's HttpServerResponse with some helper
  * methods to make it easier to deal with common tasks.
  *
  * @author comartin
  */
-public class HttpServiceResponse implements HttpServerResponse {
+public class HttpResponse implements HttpServerResponse {
 
     /**
      * response from the original request
      */
-    private final HttpServerResponse response;
+    protected final HttpServerResponse response;
 
     /**
      * the vertx context
      */
-    private final Map<String, Object> context;
+    protected final Map<String, Object> context;
 
     /**
      * response cookies
      */
-    private Set<Cookie> cookies;
+    protected Set<Cookie> cookies;
 
     /**
      * extra handlers
      */
-    private List<Handler<Void>> headersHandler;
+    protected List<Handler<Void>> headersHandler;
 
     /**
      * flag that controls when header handlers get invoked
      */
-    private boolean headersHandlerTriggered;
+    protected boolean headersHandlerTriggered;
 
     /*
      * list of endHandlers that gets invoked at end of response
      */
-    private List<Handler<Void>> endHandler;
+    protected List<Handler<Void>> endHandler;
 
     /**
      * writer filter
      */
-    private WriterFilter filter;
+    protected WriterFilter filter;
 
     /**
      * does response have a body
      */
-    private boolean hasBody;
+    protected boolean hasBody;
 
     /**
-     * Create a HttpServiceResponse from vertx HttpServerResponse
+     * Create a HttpResponse from vertx HttpServerResponse
      * @param response vertx response
      * @param context vertx context variables
      */
-    public HttpServiceResponse(HttpServerResponse response, Map<String, Object> context) {
+    public HttpResponse(HttpServerResponse response, Map<String, Object> context) {
         this.response = response;
         this.context = context;
     }
@@ -77,9 +81,9 @@ public class HttpServiceResponse implements HttpServerResponse {
     /**
      * Sets contentType header
      * @param contentType mime type of content-header
-     * @return this HttpServiceResponse
+     * @return this HttpResponse
      */
-    public HttpServiceResponse setContentType(String contentType) {
+    public HttpResponse setContentType(String contentType) {
         setContentType(contentType, MimeType.getCharset("UTF-8"));
         return this;
     }
@@ -90,7 +94,7 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @param contentEncoding charset encoding
      * @return
      */
-    public HttpServiceResponse setContentType(String contentType, String contentEncoding) {
+    public HttpResponse setContentType(String contentType, String contentEncoding) {
         if (contentEncoding == null) {
             putHeader("content-type", contentType);
         } else {
@@ -147,91 +151,7 @@ public class HttpServiceResponse implements HttpServerResponse {
         end();
     }
 
-    /**
-     * End the response by writing JSON into body and setting application/json contentType header
-     * @param json JSON element to serialize
-     */
-    public void end(JsonElement json) {
-        if (json.isArray()) {
-            JsonArray jsonArray = json.asArray();
-            setContentType("application/json", "UTF-8");
-            end(jsonArray.asString());
-        } else if (json.isObject()) {
-            JsonObject jsonObject = json.asObject();
-            setContentType("application/json", "UTF-8");
-            end(jsonObject.asString());
-        }
-    }
-
-    public void jsonp(JsonElement json) {
-        jsonp("callback", json);
-    }
-
-    public void jsonp(String callback, JsonElement json) {
-
-        if (callback == null) {
-            // treat as normal json response
-            end(json);
-            return;
-        }
-
-        String body = null;
-
-        if (json != null) {
-            if (json.isArray()) {
-                JsonArray jsonArray = json.asArray();
-                body = jsonArray.asString();
-            } else if (json.isObject()) {
-                JsonObject jsonObject = json.asObject();
-                body = jsonObject.asString();
-            }
-        }
-
-        jsonp(callback, body);
-    }
-
-    public void jsonp(String body) {
-        jsonp("callback", body);
-    }
-
-    public void jsonp(String callback, String body) {
-
-        if (callback == null) {
-            // treat as normal json response
-            setContentType("application/json", "UTF-8");
-            end(body);
-            return;
-        }
-
-        if (body == null) {
-            body = "null";
-        }
-
-        // replace special chars
-        body = body.replaceAll("\\u2028", "\\\\u2028").replaceAll("\\u2029", "\\\\u2029");
-
-        // content-type
-        setContentType("text/javascript", "UTF-8");
-        String cb = callback.replaceAll("[^\\[\\]\\w$.]", "");
-        end(cb + " && " + cb + "(" + body + ");");
-    }
-
-    public void end(ReadStream<?> stream) {
-        // TODO: filter stream?
-        hasBody = true;
-        filter = null;
-        triggerHeadersHandlers();
-        Pump.createPump(stream, response).start();
-        stream.endHandler(new Handler<Void>() {
-            @Override
-            public void handle(Void event) {
-                response.end();
-                triggerEndHandlers();
-            }
-        });
-    }
-
-    public HttpServiceResponse addCookie(Cookie cookie) {
+    public HttpResponse addCookie(Cookie cookie) {
         if (cookies == null) {
             cookies = new TreeSet<>();
         }
@@ -303,7 +223,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse setStatusCode(int statusCode) {
+    public HttpResponse setStatusCode(int statusCode) {
         response.setStatusCode(statusCode);
         return this;
     }
@@ -314,13 +234,13 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse setStatusMessage(String statusMessage) {
+    public HttpResponse setStatusMessage(String statusMessage) {
         response.setStatusMessage(statusMessage);
         return this;
     }
 
     @Override
-    public HttpServiceResponse setChunked(boolean chunked) {
+    public HttpResponse setChunked(boolean chunked) {
         response.setChunked(chunked);
         return this;
     }
@@ -336,7 +256,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse putHeader(String name, String value) {
+    public HttpResponse putHeader(String name, String value) {
         response.putHeader(name, value);
         return this;
     }
@@ -347,13 +267,13 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @return
      */
     @Override
-    public HttpServiceResponse putHeader(CharSequence name, CharSequence value) {
+    public HttpResponse putHeader(CharSequence name, CharSequence value) {
         response.putHeader(name, value);
         return this;
     }
 
     @Override
-    public HttpServiceResponse putHeader(String name, Iterable<String> values) {
+    public HttpResponse putHeader(String name, Iterable<String> values) {
         response.putHeader(name, values);
         return this;
     }
@@ -364,7 +284,7 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @return
      */
     @Override
-    public HttpServiceResponse putHeader(CharSequence name, Iterable<CharSequence> values) {
+    public HttpResponse putHeader(CharSequence name, Iterable<CharSequence> values) {
         response.putHeader(name, values);
         return this;
     }
@@ -375,7 +295,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse putTrailer(String name, String value) {
+    public HttpResponse putTrailer(String name, String value) {
         response.putTrailer(name, value);
         return this;
     }
@@ -386,13 +306,13 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @return
      */
     @Override
-    public HttpServiceResponse putTrailer(CharSequence name, CharSequence value) {
+    public HttpResponse putTrailer(CharSequence name, CharSequence value) {
         response.putTrailer(name, value);
         return this;
     }
 
     @Override
-    public HttpServiceResponse putTrailer(String name, Iterable<String> values) {
+    public HttpResponse putTrailer(String name, Iterable<String> values) {
         response.putTrailer(name, values);
         return this;
     }
@@ -403,19 +323,19 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @return
      */
     @Override
-    public HttpServiceResponse putTrailer(CharSequence name, Iterable<CharSequence> value) {
+    public HttpResponse putTrailer(CharSequence name, Iterable<CharSequence> value) {
         response.putTrailer(name, value);
         return this;
     }
 
     @Override
-    public HttpServiceResponse closeHandler(Handler<Void> handler) {
+    public HttpResponse closeHandler(Handler<Void> handler) {
         response.closeHandler(handler);
         return this;
     }
 
     @Override
-    public HttpServiceResponse write(Buffer chunk) {
+    public HttpResponse write(Buffer chunk) {
         hasBody = true;
         triggerHeadersHandlers();
         if (filter == null) {
@@ -427,7 +347,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse setWriteQueueMaxSize(int maxSize) {
+    public HttpResponse setWriteQueueMaxSize(int maxSize) {
         response.setWriteQueueMaxSize(maxSize);
         return this;
     }
@@ -438,13 +358,13 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse drainHandler(Handler<Void> handler) {
+    public HttpResponse drainHandler(Handler<Void> handler) {
         response.drainHandler(handler);
         return this;
     }
 
     @Override
-    public HttpServiceResponse write(String chunk, String enc) {
+    public HttpResponse write(String chunk, String enc) {
         hasBody = true;
         triggerHeadersHandlers();
         if (filter == null) {
@@ -456,7 +376,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse write(String chunk) {
+    public HttpResponse write(String chunk) {
         hasBody = true;
         triggerHeadersHandlers();
         if (filter == null) {
@@ -491,12 +411,51 @@ public class HttpServiceResponse implements HttpServerResponse {
         triggerEndHandlers();
     }
 
+    public void end(Object data) {
+        end(data.toString());
+    }
+
+    public void end(Object data, String enc) {
+        end(data.toString(), enc);
+    }
+
     @Override
     public void end(Buffer chunk) {
         hasBody = true;
         triggerHeadersHandlers();
         response.end(filter == null ? chunk : filter.end(chunk));
         triggerEndHandlers();
+    }
+
+    public void end(ReadStream<?> stream) {
+        // TODO: filter stream?
+        hasBody = true;
+        filter = null;
+        triggerHeadersHandlers();
+        Pump.createPump(stream, response).start();
+        stream.endHandler(new Handler<Void>() {
+            @Override
+            public void handle(Void event) {
+                response.end();
+                triggerEndHandlers();
+            }
+        });
+    }
+
+    /**
+     * End the response by writing JSON into body and setting application/json contentType header
+     * @param json JSON element to serialize
+     */
+    public void end(JsonElement json) {
+        if (json.isArray()) {
+            JsonArray jsonArray = json.asArray();
+            setContentType("application/json", "UTF-8");
+            end(jsonArray.asString());
+        } else if (json.isObject()) {
+            JsonObject jsonObject = json.asObject();
+            setContentType("application/json", "UTF-8");
+            end(jsonObject.asString());
+        }
     }
 
     @Override
@@ -511,10 +470,10 @@ public class HttpServiceResponse implements HttpServerResponse {
      * outgoing connection, bypassing memory altogether (where supported by the underlying OS)
      *
      * @param filename the file to send from disk to client
-     * @return this HttpServiceResponse
+     * @return this HttpResponse
      */
     @Override
-    public HttpServiceResponse sendFile(String filename) {
+    public HttpResponse sendFile(String filename) {
 
         return sendFile(filename, null, null);
     }
@@ -528,10 +487,10 @@ public class HttpServiceResponse implements HttpServerResponse {
      *
      * @param filename the file to send from disk to client
      * @param notFoundFile a file to serve in the event something goes wrong with serving filename
-     * @return this HttpServiceResponse
+     * @return this HttpResponse
      */
     @Override
-    public HttpServiceResponse sendFile(String filename, String notFoundFile) {
+    public HttpResponse sendFile(String filename, String notFoundFile) {
 
         return sendFile(filename, notFoundFile, null);
     }
@@ -544,10 +503,10 @@ public class HttpServiceResponse implements HttpServerResponse {
      *
      * @param filename the file to send from disk to client
      * @param resultHandler called when send completes or fails
-     * @return this HttpServiceResponse
+     * @return this HttpResponse
      */
     @Override
-    public HttpServiceResponse sendFile(String filename, Handler<AsyncResult<Void>> resultHandler) {
+    public HttpResponse sendFile(String filename, Handler<AsyncResult<Void>> resultHandler) {
 
         return sendFile(filename, null, resultHandler);
     }
@@ -564,10 +523,10 @@ public class HttpServiceResponse implements HttpServerResponse {
      * @param filename the file to send from disk to client
      * @param notFoundFile a file to serve in the event something goes wrong with serving filename
      * @param resultHandler called when send completes or fails
-     * @return this HttpServiceResponse
+     * @return this HttpResponse
      */
     @Override
-    public HttpServiceResponse sendFile(String filename,
+    public HttpResponse sendFile(String filename,
         String notFoundFile, Handler<AsyncResult<Void>> resultHandler) {
 
         // TODO: filter file?
@@ -594,7 +553,7 @@ public class HttpServiceResponse implements HttpServerResponse {
     }
 
     @Override
-    public HttpServiceResponse exceptionHandler(Handler<Throwable> handler) {
+    public HttpResponse exceptionHandler(Handler<Throwable> handler) {
         response.exceptionHandler(handler);
         return this;
     }
@@ -606,4 +565,5 @@ public class HttpServiceResponse implements HttpServerResponse {
     void setFilter(WriterFilter filter) {
         this.filter = filter;
     }
+
 }

@@ -48,8 +48,7 @@ public class MimeType {
     // @constructor MimeType
     // Static constructor to load the mime types from the resource directory inside the jar file.
     static {
-        loadFile(MimeType.class.getResourceAsStream("mime.types"));
-        loadFile(MimeType.class.getResourceAsStream("mimex.types"));
+        loadFile(MimeType.class.getResourceAsStream("/mime.types"));
     }
 
     // Returns a mime type string by parsing the file extension of a file string. If the extension is not found or

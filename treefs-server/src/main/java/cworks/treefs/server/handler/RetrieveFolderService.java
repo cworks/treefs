@@ -1,13 +1,12 @@
 package cworks.treefs.server.handler;
 
-import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
+import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpServiceRequest;
-import cworks.treefs.TreeFsClient;
 import cworks.treefs.domain.TreeFsFolder;
+import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
 
@@ -17,22 +16,22 @@ import org.vertx.java.core.Handler;
  */
 public class RetrieveFolderService extends HttpService {
     @Override
-    public void handle(HttpServiceRequest event, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
-        TreeFsClient client = event.get("client");
+        TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
-        if(!TreeFsValidation.isNull(event.path())) {
-            String path = UriService.treefsPath(mount, event.path());
+        if(!TreeFsValidation.isNull(request.path())) {
+            String path = UriService.treefsPath(mount, request.path());
             payload.setString("path", path);
         } else {
             next.handle(null);
         }
 
-        String depth = event.getParameter("depth", "-1");
-        String filter = event.getParameter("filter", null);
-        String foldersOnly = event.getParameter("foldersOnly", "false");
-        String filesOnly = event.getParameter("filesOnly", "false");
-        String recursive = event.getParameter("recursive", "false");
+        String depth = request.getParameter("depth", "-1");
+        String filter = request.getParameter("filter", null);
+        String foldersOnly = request.getParameter("foldersOnly", "false");
+        String filesOnly = request.getParameter("filesOnly", "false");
+        String recursive = request.getParameter("recursive", "false");
 
         payload.setNumber("depth", Integer.parseInt(depth));
         payload.setString("filter", filter);
@@ -44,7 +43,7 @@ public class RetrieveFolderService extends HttpService {
             payload.getString("path"), payload);
 
         if(folder != null) {
-            event.response().end(Json.asString(folder));
+            request.response().end(folder);
         } else {
             next.handle(new TreeFsException("unable to retrieve folder: "
                 + payload.getString("path")));

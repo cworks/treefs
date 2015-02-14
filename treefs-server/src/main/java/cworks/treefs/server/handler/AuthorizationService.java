@@ -5,7 +5,7 @@ import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.security.TreeFsSecurity;
 import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
+import cworks.treefs.server.core.HttpRequest;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.MultiMap;
 
@@ -22,7 +22,7 @@ public class AuthorizationService extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpServiceRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
         // check for required treefs-client header
         MultiMap headers = request.headers();

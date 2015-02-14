@@ -1,15 +1,14 @@
 package cworks.treefs.server.handler;
 
-import cworks.json.Json;
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsClient;
-import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpServiceRequest;
 import cworks.treefs.TreeFsType;
+import cworks.treefs.TreeFsValidation;
 import cworks.treefs.domain.TreeFsFolder;
 import cworks.treefs.domain.TreeFsPath;
+import cworks.treefs.server.core.HttpRequest;
+import cworks.treefs.server.core.HttpService;
 import org.vertx.java.core.Handler;
 
 /**
@@ -30,7 +29,7 @@ public class FetchPathService extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpServiceRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<Object> next) {
 
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();
@@ -46,7 +45,7 @@ public class FetchPathService extends HttpService {
             case FOLDER: {
                 TreeFsPath treefsPath = fetchFolder(client, request, data);
                 if(!TreeFsValidation.isNull(treefsPath)) {
-                    request.response().end(Json.asString(treefsPath));
+                    request.response().end(treefsPath);
                 }
                 break;
             }
@@ -69,7 +68,7 @@ public class FetchPathService extends HttpService {
      * @param request api request for a file
      * @param data parameters from the request
      */
-    void fetchFile(TreeFsClient client, HttpServiceRequest request, JsonObject data) {
+    void fetchFile(TreeFsClient client, HttpRequest request, JsonObject data) {
 
         request.response()
             .sendFile(TreeFs.storageManager(client)
@@ -84,7 +83,7 @@ public class FetchPathService extends HttpService {
      * @param data parameters from the request
      * @return TreeFsFolder instance
      */
-    TreeFsPath fetchFolder(TreeFsClient client, HttpServiceRequest request, JsonObject data) {
+    TreeFsPath fetchFolder(TreeFsClient client, HttpRequest request, JsonObject data) {
 
         String depth       = request.getParameter("depth", "-1");
         String filter      = request.getParameter("filter", null);
