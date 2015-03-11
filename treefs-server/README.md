@@ -18,10 +18,12 @@
     1.1. Create one folder using create-folder.sh
         create-folder.sh hello/chuck
     1.2. Create demo folders using demo-create-folders.sh
+    
 2. Create files
     2.1. Create one file using file-upload.sh
         file-upload.sh hello/chuck Chuck_Norris.jpg
     2.2. Create demo files using demo-upload-files.sh
+    
 3. List and filter folders
     3.1. List one of the demo folders with varying depth (0,1,2,3)
         3.1.1. retrieve-folder-depth.sh demo 0
@@ -30,23 +32,28 @@
         3.1.4. retrieve-folder-depth.sh demo/n1_1 1
     3.2. Filter demo folders using retrieve-folder-filter.sh
         3.2.1. retrieve-folder-filter.sh demo/n1_1 "*.pdf" 1
+        
 4. Get a file
     4.1. Retrieve a file from TreeFs using file-download.sh
         file-download.sh demo/n1_1/nacho_libre.pdf mynacho.pdf
         file-download.sh demo/n1_1/n2_1/n3_2/n4_1/encarnacion.txt encar.txt
+        
 5. Get metadata from file/folder path-metadata.sh
     5.1. path-metadata.sh demo/nacho_libre.pdf
     5.2. path-metadata.sh demo/n1_1/n2_1/eagles_eggs.txt
+    
 6. Copy a folder and/or file copy-path.sh
     6.1. Copy a file (first create new folder)
         create-folder.sh hello/newplace
         copy-path.sh demo/n1_1/n2_1/nacho_libre.zip hello/newplace
     6.2. Copy a folder into a folder: copy-path.sh demo/n1_1 hello
     6.3. Copy folder content into a folder: copy-path-recursive.sh demo/n1_1/n2_1 hello
+    
 7. Trash stuff trash.sh
     trash.sh demo/n1_1/n2_1/n3_1/hooray_nacho.xlsx
     trash.sh demo/n1_1/n2_1/n3_1/ouch.docx
     trash.sh demo/n1_1/n2_1/n3_1
+    
 8. Delete a path delete.sh
     delete-path.sh demo/n1_1/n2_1/n3_1/hooray_nacho.xlsx
     delete-path.sh demo/n1_1/n2_1/n3_1

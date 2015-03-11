@@ -59,7 +59,7 @@ public class HttpTest {
     @Test
     public void exampleHttpGet() throws IOException {
 
-        String response = Http.get("http://localhost:4444/treefs/default/demo/n1_1")
+        String response = Http.get("http://localhost:4444/demo/n1_1")
              .header(new BasicHeader("Accept", "application/json"))
              .header(new BasicHeader("treefs-client", "corbofett"))
              .header(new BasicHeader("User-Agent", "treefs/1.0.0"))
@@ -86,7 +86,7 @@ public class HttpTest {
         "}";
 
         // uses internal http client, not one create in beforeClass method
-        String response = Http.post("http://localhost:4444/treefs/default/unittest/httptest/testfolder")
+        String response = Http.post("http://localhost:4444/unittest/httptest/testfolder")
             .body(body)
             .header(new BasicHeader("treefs-client", "corbofett"))
             .header(new BasicHeader("User-Agent", "treefs/1.0.0"))
