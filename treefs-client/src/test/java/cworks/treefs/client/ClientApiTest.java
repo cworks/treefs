@@ -5,6 +5,7 @@ import cworks.treefs.domain.TreeFsFile;
 import cworks.treefs.domain.TreeFsFolder;
 import cworks.treefs.domain.TreeFsPath;
 import cworks.treefs.domain.TreeFsPathVisitor;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Unit tests that show how a client would use TreeFs
  */
-public class ClientApiTest {
+public class ClientApiTest extends BaseClientTest {
 
     /**
      * VertxContainer used in this unit test.  Note: treefs-client has a testCompile
@@ -44,10 +45,9 @@ public class ClientApiTest {
 // =================================================================================================
 // CREATE TREEFS Context Tests/Examples
 // =================================================================================================
-    @Test
+    //@Test
     public void createContextExamples() {
 
-        // create TreeFs context with default ("http://127.0.0.1:1973/treefs") config
         Context treefs = TreeFs.create();
         Assert.assertEquals("localhost", treefs.config().host());
 
@@ -62,23 +62,20 @@ public class ClientApiTest {
         // create TreeFs instance, overriding the host
         treefs = TreeFs.create("api.com/treefs");
         Assert.assertEquals("api.com/treefs", treefs.config().host());
-        Assert.assertEquals("default", treefs.config().fileSystem());
         Assert.assertEquals("http", treefs.config().protocol());
         Assert.assertEquals(4444, treefs.config().port());
 
         // create TreeFs instance, overriding the host,
         // since http:// is added it will override protocol as well
         treefs = TreeFs.create("http://treefs.io");
-        Assert.assertEquals("treefs.io/treefs", treefs.config().host());
-        Assert.assertEquals("default", treefs.config().fileSystem());
+        Assert.assertEquals("treefs.io", treefs.config().host());
         Assert.assertEquals("http", treefs.config().protocol());
         Assert.assertEquals(4444, treefs.config().port());
 
         // create TreeFs instance, overriding the host,
         // since https:// is added it will override protocol as well
         treefs = TreeFs.create("https://treefs.io");
-        Assert.assertEquals("treefs.io/treefs", treefs.config().host());
-        Assert.assertEquals("default", treefs.config().fileSystem());
+        Assert.assertEquals("treefs.io", treefs.config().host());
         Assert.assertEquals("https", treefs.config().protocol());
         Assert.assertEquals(4444, treefs.config().port());
 
@@ -95,7 +92,6 @@ public class ClientApiTest {
         // since http:// is added it will override protocol as well
         treefs = TreeFs.create("http://happyhappyfunplace.com/treefs", 9876);
         Assert.assertEquals("happyhappyfunplace.com/treefs", treefs.config().host());
-        Assert.assertEquals("default", treefs.config().fileSystem());
         Assert.assertEquals("http", treefs.config().protocol());
         Assert.assertEquals(9876, treefs.config().port());
 
@@ -396,118 +392,60 @@ public class ClientApiTest {
 
     @Test
     public void createPathExamples() {
-
+        
         Context treefs = TreeFs.create();
 
+        String msTime = System.currentTimeMillis() + "";
         // create path
-        TreeFsPath path1 = treefs.newPath("a/new/path/" + System.currentTimeMillis())
+        TreeFsPath path1 = treefs.newPath("a/new/path/" + msTime)
             .addMeta("a", "is for Apple")
             .addMeta("b", "is for Button")
             .addMeta("c", "is for Candy")
             .overwrite()
             .create();
 
-        TreeFsPath path2 = treefs.ls("a/new/path").fetch();
-        Assert.assertEquals("a/new/path", path2.path());
-        Assert.assertEquals("path", path2.name());
+        TreeFsPath path2 = treefs.ls("a/new/path/" + msTime).fetch();
+        Assert.assertEquals("a/new/path/" + msTime, path2.path());
+        Assert.assertEquals(msTime, path2.name());
     }
+    
+    @Test
+    public void sanitize() {
+        String tagsRemoved = "<script>alert(\"hello\");</script>".replaceAll("<.*?>", "");
+        Assert.assertEquals("alert(\"hello\");", tagsRemoved);
 
-    /**
-     * Get metadata for paths (files and folders)
-     */
-    public void metadataExamples() {
+        tagsRemoved = "alert(\"hello\");</script>".replaceAll("<.*?>", "");
+        Assert.assertEquals("alert(\"hello\");", tagsRemoved);
 
-        Context treefs = TreeFs.create();
-
-        // get all metadata associated with the given path
-        //Map<String, Object> m1 = treefs.meta("demo/n1_1").fetch();
-
-        // get all metadata associated with the given path
-        //Map<String, Object> m2 = treefs.meta("demo/n1_2/nacho_libre.pdf").fetch();
+        tagsRemoved = "<script>alert(\"hello\");".replaceAll("<.*?>", "");
+        Assert.assertEquals("alert(\"hello\");", tagsRemoved);
     }
+    
+    @Test
+    public void escape() {
 
-    /**
-     * Update path
-     */
-    public void updatePathMeta() {
-
-        Context treefs = TreeFs.create();
-
-        // update path with metadata
-//        treefs.path("a/path/with/metadata")
-//            .withMeta("key4", new JsonObject()).update();
-//
-//        // update path with metadata and add a callback handler
-//        treefs.path("a/path/with/metadata")
-//            .withMeta("key2", new Long(2000))
-//            .withHandler(new Handler<Message>() {
-//                public void handle(Message response) {
-//                    System.out.println(response.statusCode());
-//                }
-//            }).update();
-
+        String escaped = StringEscapeUtils.escapeHtml(
+            "<script>alert(\"I'm in need of escaping...perhaps Greece?\");</script>"
+        );
+        
+        // Browser's will render the escaped text correctly
+        Assert.assertEquals(
+            "&lt;script&gt;alert(&quot;I'm in need of escaping...perhaps Greece?&quot;);&lt;/script&gt;",
+            escaped
+        );
+        
     }
-
-    /**
-     * Trash path
-     */
-    public void trashPath() {
-
-        Context treefs = TreeFs.create();
-
-
-        // move to trash
-        //treefs.path("a/path/to/trash").trash();
-
-        // move to trash recursively
-//        treefs.path("a/path/to/trash/two")
-//            .recursive()
-//            .trash();
-
-        // move to trash and get status of op
-//        treefs.path("a/path/to/trash/three")
-//            .recursive()
-//            .withHandler(new Handler<Message>() {
-//                public void handle(Message response) {
-//                    System.out.println(response.statusCode());
-//                }
-//            }).trash();
-    }
-
-    /**
-     * Create file methods will take a file from the local file system and upload it to TreeFs
-     */
-    public void createFileExamples() {
-
-        Context treefs = TreeFs.create();
-
-        // basic create file with no key
-        TreeFsFile f1 = treefs.newFile(new File("chuck.jpg"))
-            .in("/a/remote/folder/mypics")
-            .create();
-
-        TreeFsFile f2 = treefs.newFile(new File("some/local/file.zip"))
-            .in("a/remote/place")
-            .key("my-special-key-for-this-file")
-            .saveAs("mySpecialFile.zip")
-            .create();
-
-        // create file with some metadata and a sha1
-        // if sha1 is given then file content will be compared to sha1
-        // if compare is successfull the file is stored otherwise it's rejected
-        TreeFsFile f3 = treefs.newFile(new File("a/local/file.zip"))
-            .in("/a/remote/folder")
-            .addMeta("name", "chuck")
-            .addMeta("phone", "817-123-9999")
-            .addMeta("patientId", "88888888")
-            .sha1("a-sha1-of-file.zip").overwrite(true).create();
-
-        // Create a file and include the number of bytes that compose the file in size()
-        // TODO Not sure why we would need this
-        TreeFsFile f4 = treefs.newFile(new File(""))
-            .in("a/remote/folder")
-            .size(10000L).create();
-
+    
+    @Test
+    public void fullExample() {
+        String badInput = "<script>alert(\"I'm in need of escaping...perhaps Greece?\");</script>";
+        String tagsRemoved = badInput.replaceAll("<.*?>", "");
+        String cleanAndSafe = StringEscapeUtils.escapeHtml(tagsRemoved);
+        // cleanAndSafe is stripped of the evil <script></script> tag
+        // and html encoded
+        Assert.assertEquals("alert(&quot;I'm in need of escaping...perhaps Greece?&quot;);", cleanAndSafe);
+        String presentable = StringEscapeUtils.unescapeHtml(cleanAndSafe);
+        System.out.println(presentable);
     }
 
 }

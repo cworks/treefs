@@ -66,7 +66,7 @@ public class S3FlatToTreeTest {
      * a SPath graph must be built instead of a flattened structure like S3 or the subPaths variable
      * below.
      */
-    @Test
+    //@Test
     public void flatToTree() {
 
         S3Tree<String> tree  = new S3Tree<String>("/");

@@ -23,11 +23,7 @@ public class Folder implements FolderApi {
 
     private Map<String, Object> metadata = null;
 
-    /**
-     * Every listing must be done on a file-system but default the default file-system is default
-     * creative ... no?
-     */
-    private String fs = "default";
+    private String fs = "";
 
     public Folder(String path, Config config) {
         this.path = path;
@@ -67,7 +63,7 @@ public class Folder implements FolderApi {
             }
 
             String url = config.protocol() + "://" + config.host() + ":" + config.port()
-                    + "/treefs/" + fs + sb.toString();
+                    + "/" + sb.toString();
 
             String response = client.post(url)
                 .body(Json.asString(params))

@@ -19,7 +19,7 @@ TREEFS_MOD=build/mods/$MOD_NAME
 JAVA_OPTS="-Xms2048M -Xmx4096M -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 "
 export JAVA_OPTS
 
-export CLASSPATH=build/mods/treefs-server\~treefs-server\~SNAPSHOT:build/mods/treefs-server\~treefs-server\~SNAPSHOT/lib/*
+export CLASSPATH="build/mods/treefs-server\~treefs-server\~SNAPSHOT:build/mods/treefs-server\~treefs-server\~SNAPSHOT/lib/*"
 
 # Display our environment
 echo "<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>"

@@ -49,7 +49,7 @@ public final class TreeFs {
             @Override
             public String protocol() {
                 return (
-                    ep.containsKey("protocol") == false ?
+                        !ep.containsKey("protocol") ?
                         defaultConfig.protocol() : ep.get("protocol")
                 );
             }
@@ -60,7 +60,7 @@ public final class TreeFs {
             @Override
             public String host() {
                 return (
-                    ep.containsKey("endpoint") == false ?
+                        !ep.containsKey("endpoint") ?
                         defaultConfig.host() : ep.get("endpoint")
                 );
             }
@@ -98,7 +98,7 @@ public final class TreeFs {
             @Override
             public String protocol() {
                 return (
-                    ep.containsKey("protocol") == false ?
+                        !ep.containsKey("protocol") ?
                         defaultConfig.protocol() : ep.get("protocol")
                 );
             }
@@ -111,7 +111,7 @@ public final class TreeFs {
             @Override
             public String host() {
                 return (
-                    ep.containsKey("endpoint") == false ?
+                        !ep.containsKey("endpoint") ?
                         defaultConfig.host() : ep.get("endpoint")
                 );
             }

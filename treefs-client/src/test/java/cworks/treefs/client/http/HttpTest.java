@@ -1,8 +1,9 @@
 package cworks.treefs.client.http;
 
-
+import cworks.json.Json;
+import cworks.json.JsonObject;
+import cworks.treefs.client.BaseClientTest;
 import net.cworks.http.Http;
-import net.cworks.json.JsonObject;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.HttpClientConnectionManager;
@@ -25,9 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static net.cworks.json.Json.Json;
-
-public class HttpTest {
+public class HttpTest extends BaseClientTest {
 
     /**
      * Default HTTP connection timeout
@@ -98,7 +97,7 @@ public class HttpTest {
         System.out.println("post> " + response);
 
         // uses internal http client, not one created in beforeClass method
-        response = Http.get("http://localhost:4444/treefs/default/unittest/httptest/testfolder")
+        response = Http.get("http://localhost:4444/unittest/httptest/testfolder")
             .header(new BasicHeader("Accept", "application/json"))
             .header(new BasicHeader("treefs-client", "corbofett"))
             .header(new BasicHeader("User-Agent", "treefs/1.0.0"))
@@ -116,7 +115,7 @@ public class HttpTest {
     @Test
     public void exampleHttpMultipart_CreateFile() throws IOException {
 
-        String response = Http.multipart("http://localhost:4444/treefs/default/" +
+        String response = Http.multipart("http://localhost:4444/" +
             "unittest/httptest/testfolder/content")
             .upload(new File("src/test/resources/data/nacho_libre.pdf"),
                 ContentType.create("application/pdf"))
@@ -148,7 +147,7 @@ public class HttpTest {
             "\"metadata\":{\"file_type\":\"application/pdf\"}" +
         "}";
 
-        String response = Http.multipart("http://localhost:4444/treefs/default/" +
+        String response = Http.multipart("http://localhost:4444/" +
                 "unittest/httptest/testfolder/content")
                 .upload(new File("src/test/resources/data/nacho_libre.pdf"),
                         ContentType.create("application/pdf"))
@@ -183,12 +182,12 @@ public class HttpTest {
      *
      * @throws IOException
      */
-    @Test
+    //@Test
     public void exampleHttpMultipart_OverwriteFile() throws IOException {
 
         String json = "{\"name\":\"nacho_libre_overwrite.pdf\"}";
 
-        String response = Http.multipart("http://localhost:4444/treefs/default/" +
+        String response = Http.multipart("http://localhost:4444/" +
             "unittest/httptest/testfolder/content")
             .upload(new File("src/test/resources/data/nacho_libre.pdf"), ContentType.create("application/pdf"))
             .data("file", json)
@@ -202,7 +201,7 @@ public class HttpTest {
         //Assert.assertEquals("file", jr.getString("type"));
         Assert.assertEquals("nacho_libre_overwrite.pdf", jr.getString("name"));
 
-        response = Http.multipart("http://localhost:4444/treefs/default/" +
+        response = Http.multipart("http://localhost:4444/" +
             "unittest/httptest/testfolder/content")
             .upload(new File("src/test/resources/data/nacho_libre.pdf"), ContentType.create("application/pdf"))
             .data("file", json)
@@ -215,7 +214,7 @@ public class HttpTest {
         jr = new JsonObject(response);
         Assert.assertEquals(Integer.valueOf(400), jr.getObject("error").getInteger("statusCode"));
 
-        response = Http.multipart("http://localhost:4444/treefs/default/" +
+        response = Http.multipart("http://localhost:4444/" +
             "unittest/httptest/testfolder/content")
             .upload(new File("src/test/resources/data/nacho_libre.pdf"), ContentType.create("application/pdf"))
             .data("file", json)
@@ -244,7 +243,7 @@ public class HttpTest {
     //@AfterClass
     public static void exampleHttp_Delete() throws IOException {
 
-        String response = Http.delete("http://localhost:4444/treefs/default/unittest")
+        String response = Http.delete("http://localhost:4444/unittest")
             .header(new BasicHeader("treefs-client", "corbofett"))
             .header(new BasicHeader("User-Agent", "treefs/1.0.0"))
             .header(new BasicHeader("Accept-Charset", "UTF-8"))
@@ -255,7 +254,7 @@ public class HttpTest {
         JsonObject jo = new JsonObject(response);
         Assert.assertEquals(Integer.valueOf(400), jo.getObject("error").getInteger("statusCode"));
 
-        response = Http.delete("http://localhost:4444/treefs/default/unittest")
+        response = Http.delete("http://localhost:4444/unittest")
             .header(new BasicHeader("treefs-client", "corbofett"))
             .header(new BasicHeader("User-Agent", "treefs/1.0.0"))
             .header(new BasicHeader("Accept-Charset", "UTF-8"))
@@ -280,7 +279,8 @@ public class HttpTest {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    JsonObject bodyContent = Json().object()
+
+                    JsonObject bodyContent = Json.object()
                         .number("siegeVal", 1000000)
                         .number("siegeId", (fi + 1))
                         .build();

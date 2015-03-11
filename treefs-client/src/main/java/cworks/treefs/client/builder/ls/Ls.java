@@ -46,7 +46,7 @@ public class Ls implements LsApi {
      * Every listing must be done on a file-system but default the default file-system is default
      * creative ... no?
      */
-    private String fs = "default";
+    private String fs = "";
 
     /**
      * List of glob patterns used to filter the listing
@@ -140,7 +140,7 @@ public class Ls implements LsApi {
             }
 
             String url = config.protocol() + "://" + config.host() + ":" + config.port()
-                    + "/treefs/" + fs + sb.toString();
+                    + "/" + sb.toString();
 
             String response = client.get(url)
                 .params(params)

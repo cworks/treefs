@@ -1,11 +1,11 @@
 package cworks.treefs.server;
 
+import cworks.json.JsonArray;
+import cworks.json.JsonObject;
 import cworks.treefs.TreeFsValidation;
 import org.apache.log4j.Logger;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.PlatformLocator;
 import org.vertx.java.platform.PlatformManager;
 
@@ -61,15 +61,61 @@ public class VertxContainer {
     }
 
     /**
+     * Create a container with the default (development) settings
+     * @return
+     */
+    public static VertxContainer newContainer() {
+        return newContainer("localhost", 4444);
+    }
+
+    /**
+     * Create a container and bind to the given host and port
+     * @param host
+     * @param port
+     * @return
+     */
+    public static VertxContainer newContainer(String host, int port) {
+        JsonObject config = new JsonObject();
+        config.setString("moduleName", "treefs-server~treefs-server~SNAPSHOT");
+        config.setNumber("port", port);
+        config.setString("host", host);
+        config.setString("treefs.clients", "build/resources/main/treefsclients.json");
+        JsonArray classpath = new JsonArray(new String[]{
+                "build/mods/treefs-server~treefs-server~SNAPSHOT",
+                "build/mods/treefs-server~treefs-server~SNAPSHOT/lib/*"
+        });
+        config.setArray("classpath", classpath);
+        // configure individual verticles
+        JsonArray verticles = new JsonArray();
+        verticles.addObject(new JsonObject()
+                .setString("verticle", "TreeFsServer")
+                .setString("type", "standard")
+                .setNumber("instances", 1));
+        verticles.addObject(new JsonObject()
+                .setString("verticle", "cworks.treefs.server.handler.SiegeApp")
+                .setString("type", "worker")
+                .setNumber("instances", 7));
+        verticles.addObject(new JsonObject()
+                .setString("verticle", "cworks.treefs.server.worker.Worker")
+                .setString("type", "worker")
+                .setNumber("instances", 20));
+        config.setArray("verticles", verticles);
+        config.setBoolean("settings.response.pretty", true);
+        
+        return newContainer(config);
+    }
+    
+    /**
      * Create a new VertxContainer instance
      * @param config
      * @return
      */
     public static VertxContainer newContainer(JsonObject config) {
-
         VertxContainer container = new VertxContainer(config);
         return container;
     }
+    
+
 
     /**
      * Boot an embedded vertx container
@@ -121,31 +167,26 @@ public class VertxContainer {
         };
 
         final PlatformManager pm = PlatformLocator.factory.createPlatformManager();
+        Runnable runnable = () -> {
 
-        // need a Runnable
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+            logger.info("Starting VertxContainer...");
 
-                logger.info("starting VertxContainer...");
+            pm.deployModuleFromClasspath(moduleName,
+                new org.vertx.java.core.json.JsonObject(config.toMap()),
+                instances,
+                urls.toArray(new URL[urls.size()]),
+                doneHandler);
 
-                pm.deployModuleFromClasspath(moduleName,
-                    config,
-                    instances,
-                    urls.toArray(new URL[urls.size()]),
-                    doneHandler);
-
-                while(running) {
-                    try {
-                        Thread.sleep((long) 1000 * 60 * 60);
-                    } catch (InterruptedException e) {
-                        running = false;
-                    }
+            while(running) {
+                try {
+                    Thread.sleep((long) 1000 * 60 * 60);
+                } catch (InterruptedException e) {
+                    running = false;
                 }
-
-                logger.info("stopping VertxContainer...");
-                pm.stop();
             }
+
+            logger.info("Stopping VertxContainer...");
+            pm.stop();
         };
 
         Thread thread = new Thread(runnable);
@@ -167,46 +208,42 @@ public class VertxContainer {
      * @param args
      */
     public static void main(String[] args) {
-
-        JsonObject config = new JsonObject();
-        config.putString("moduleName", "treefs-server~treefs-server~SNAPSHOT");
-        config.putNumber("port", 4444);
-        config.putString("host", "localhost");
-        config.putString("treefs.clients", "build/resources/main/treefsclients.json");
-        JsonArray classpath = new JsonArray(new String[]{
-            "build/mods/treefs-server~treefs-server~SNAPSHOT",
-            "build/mods/treefs-server~treefs-server~SNAPSHOT/lib/*"
-        });
-        config.putArray("classpath", classpath);
-        // configure individual verticles
-        JsonArray verticles = new JsonArray();
-        verticles.addObject(new JsonObject()
-                .putString("verticle", "TreeFsServer")
-                .putString("type", "standard")
-                .putNumber("instances", 1));
-        verticles.addObject(new JsonObject()
-                .putString("verticle", "cworks.treefs.server.handler.SiegeApp")
-                .putString("type", "worker")
-                .putNumber("instances", 7));
-        verticles.addObject(new JsonObject()
-                .putString("verticle", "cworks.treefs.server.worker.Worker")
-                .putString("type", "worker")
-                .putNumber("instances", 20));
-        config.putArray("verticles", verticles);
-        config.putBoolean("settings.response.pretty", true);
-
+        
         // starts a container
         try {
-            VertxContainer container = VertxContainer.newContainer(config).start();
-            try {
-                Thread.sleep(1000 * 60);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            container.shutdown();
-        } catch (VertxContainerException ex) {
+            String host = getHost(args);
+            int port = getPort(args);
+            
+            final VertxContainer container = VertxContainer.newContainer(host, port).start();
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    if(container != null) {
+                        container.shutdown();
+                    }
+                }
+            });
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * TODO fix me I'm hard coded 
+     * @param args
+     * @return
+     */
+    private static int getPort(String[] args) {
+        return 4444;
+    }
+
+    /**
+     * TODO fix me I'm hard coded
+     * @param args
+     * @return
+     */
+    private static String getHost(String[] args) {
+        return "localhost";
     }
 
 }

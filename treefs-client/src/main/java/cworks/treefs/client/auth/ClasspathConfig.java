@@ -97,12 +97,12 @@ public class ClasspathConfig implements Config {
     }
 
     /**
-     * FileSystem to use, "default" is...you guessed it...the default
+     * FileSystem to use, "" is...you guessed it...the default
      * @return
      */
     @Override
     public String fileSystem() {
-        String fs = properties.getProperty("treefs.fs", "default");
+        String fs = properties.getProperty("treefs.fs", "");
         return fs;
     }
 
