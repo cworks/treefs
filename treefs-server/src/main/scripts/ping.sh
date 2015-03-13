@@ -5,8 +5,14 @@ finished() {
     exit 1
 }
 
+pretty=false
+if [ $1 == "pretty" ]
+then
+    pretty=true
+fi
+
 curl -i -v \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
-http://$address:$port/_ping
+http://$address:$port/_ping?pretty=$pretty

@@ -57,21 +57,21 @@ public class HttpRequest implements HttpServerRequest {
     };
 
     // the original request
-    private final HttpServerRequest request;
+    protected final HttpServerRequest request;
     // the wrapped response
-    private final HttpResponse response;
+    protected final HttpResponse response;
     // the request context
-    private final Map<String, Object> context;
+    protected final Map<String, Object> context;
     // is this request secure
-    private final boolean secure;
+    protected final boolean secure;
     // we can override the setMethod
-    private String method;
+    protected String method;
     // -1 means no limit
     private long bodyLengthLimit = -1;
     // the body is protected so extensions can access the raw object instead of casted versions.
     protected Object body;
     // list of files that might be set in file-upload operation
-    private Map<String, FileUpload> files;
+    protected Map<String, FileUpload> files;
     // control flags
     private boolean expectMultiPartCalled = false;
 
@@ -82,6 +82,10 @@ public class HttpRequest implements HttpServerRequest {
         this.method = request.method();
         this.response = response;
         this.secure = secure;
+    }
+    
+    public HttpRequest(HttpRequest request) {
+        this(request.request, request.response, request.secure, request.context);
     }
 
     /**

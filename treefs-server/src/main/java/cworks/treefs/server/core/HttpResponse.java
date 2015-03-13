@@ -1,8 +1,5 @@
 package cworks.treefs.server.core;
 
-import cworks.json.JsonArray;
-import cworks.json.JsonElement;
-import cworks.json.JsonObject;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.ServerCookieEncoder;
@@ -76,6 +73,14 @@ public class HttpResponse implements HttpServerResponse {
     public HttpResponse(HttpServerResponse response, Map<String, Object> context) {
         this.response = response;
         this.context = context;
+    }
+
+    /**
+     * Wrap an existing HttpResponse
+     * @param response http response
+     */
+    public HttpResponse(HttpResponse response) {
+        this(response.response, response.context);
     }
 
     /**
@@ -440,22 +445,6 @@ public class HttpResponse implements HttpServerResponse {
                 triggerEndHandlers();
             }
         });
-    }
-
-    /**
-     * End the response by writing JSON into body and setting application/json contentType header
-     * @param json JSON element to serialize
-     */
-    public void end(JsonElement json) {
-        if (json.isArray()) {
-            JsonArray jsonArray = json.asArray();
-            setContentType("application/json", "UTF-8");
-            end(jsonArray.asString());
-        } else if (json.isObject()) {
-            JsonObject jsonObject = json.asObject();
-            setContentType("application/json", "UTF-8");
-            end(jsonObject.asString());
-        }
     }
 
     @Override

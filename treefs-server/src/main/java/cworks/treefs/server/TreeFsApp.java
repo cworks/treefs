@@ -215,7 +215,11 @@ public class TreeFsApp {
                 if(response.getInteger("status", 0) == 200) {
                     return;
                 }
-            } catch(IOException ex) { /* ignore */ }
+            } catch(IOException ex) {
+                if(i == (attempts-1)) {
+                    logger.error("Error conducting ping on startup.", ex);
+                }
+            }
             delay(3);
             i++;
         }
@@ -277,7 +281,6 @@ public class TreeFsApp {
     public static void main(String[] args) {
         try {
             String home = getTreeFsHome(args);
-            System.out.println("HOME: " + home);
             String host = getHost(args);
             int port = getPort(args);
             

@@ -10,4 +10,4 @@ curl -i -v \
 -H "Content-Type: application/json" \
 -H "treefs-client: $clientid" \
 -X POST --data '{"siegeVal":1000000, "siegeId":1}' \
-http://$address:$port/siege
+http://$address:$port/_siege

@@ -1,28 +1,64 @@
-package cworks.treefs.server.core;
+package cworks.treefs.server.json;
 
 import cworks.json.Json;
 import cworks.json.JsonArray;
 import cworks.json.JsonElement;
 import cworks.json.JsonObject;
-import org.vertx.java.core.http.HttpServerResponse;
-
-import java.util.Map;
+import cworks.treefs.server.core.HttpResponse;
 
 public class JsonResponse extends HttpResponse {
 
-    /**
-     * Create a JsonResponse wrapping the vertx HttpServerResponse
-     *
-     * @param response vertx response
-     * @param context  vertx context variables
-     */
-    public JsonResponse(HttpServerResponse response, Map<String, Object> context) {
-        super(response, context);
-        setContentType("application/json");
+    private boolean isPretty;
+    
+    public JsonResponse(HttpResponse response) {
+        this(response, false);
     }
 
+    public JsonResponse(HttpResponse response, boolean pretty) {
+        super(response);
+        setContentType("application/json");
+        isPretty(pretty);
+    }
+    
+    public void asPrettyJson(JsonObject content) {
+        JsonObject okWrapper = Json.object()
+            .object("response", content)
+            .number("status", 200).build();
+        
+        super.setStatusCode(200);
+        super.end(Json.asPrettyString(okWrapper));
+        super.close();
+    }
+
+    public void asJson(JsonObject content) {
+        if(isPretty()) {
+            asPrettyJson(content);
+        } else {
+            JsonObject okWrapper = Json.object()
+                .object("response", content)
+                .number("status", 200).build();
+
+            super.setStatusCode(200);
+            super.end(Json.asString(okWrapper));
+            super.close();
+        }
+    }
+
+    public void asJson(Exception ex, int status) {
+        JsonObject errorWrapper = Json.object()
+            .string("error", ex.getMessage())
+            .number("status", status).build();
+        super.setStatusCode(status);
+        if (isPretty()) {
+            super.end(Json.asPrettyString(errorWrapper));
+        } else {
+            super.end(Json.asString(errorWrapper));
+        }
+        super.close();
+    }
+    
     public void end(Object data) {
-        if(isPrettyEnabled()) {
+        if(isPretty()) {
             super.end(Json.asPrettyString(data));
         } else {
             super.end(Json.asString(data));
@@ -30,7 +66,7 @@ public class JsonResponse extends HttpResponse {
     }
 
     public void end(Object data, String enc) {
-        if(isPrettyEnabled()) {
+        if(isPretty()) {
             super.end(Json.asPrettyString(data));
         } else {
             super.end(Json.asString(data));
@@ -90,11 +126,14 @@ public class JsonResponse extends HttpResponse {
         end(cb + " && " + cb + "(" + body + ");");
     }
 
-    /**
-     * Return true if pretty is enabled in the context otherwise false.
-     * @return
-     */
-    private boolean isPrettyEnabled() {
+    private void isPretty(boolean pretty) {
+        this.isPretty = pretty;
+    }
+
+    private boolean isPretty() {
+        if(isPretty) {
+            return true;
+        }
 
         if(this.context == null) {
             return false;
@@ -106,4 +145,6 @@ public class JsonResponse extends HttpResponse {
 
         return Boolean.valueOf(this.context.get("json.pretty").toString());
     }
+
+
 }

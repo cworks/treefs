@@ -2,29 +2,26 @@ package cworks.treefs.server.handler;
 
 import cworks.json.Json;
 import cworks.json.JsonObject;
-import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.core.HttpRequest;
 import cworks.treefs.common.dt.ISO8601DateParser;
-import org.vertx.java.core.Handler;
+import cworks.treefs.server.json.JsonHttpService;
+import cworks.treefs.server.json.JsonRequest;
 
 import java.util.Date;
 
-public class PingService extends HttpService {
+public class PingService extends JsonHttpService {
+    
     @Override
-    public void handle(HttpRequest event,
-        Handler<Object> next) {
+    public void handle(final JsonRequest request) {
 
-        JsonObject response = Json.object()
+        String clientId = request.getParameter("clientId", "anonymous");
+        JsonObject pingBody = Json.object()
+            .string("hello", clientId)
             .string("app", "treefs")
-            .string("version", "1.0.0")
+            .string("version", "1.0")
             .string("time", ISO8601DateParser.toString(new Date()))
-            .number("status", 200)
             .build();
-
-        event.response().setStatusCode(200)
-            .end(response.asString());
-        event.response().close();
+        
+        request.response(pingBody);
     }
-
 
 }

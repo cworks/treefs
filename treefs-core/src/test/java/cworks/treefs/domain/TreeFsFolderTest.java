@@ -75,7 +75,7 @@ public class TreeFsFolderTest {
             .withCreatedBy("corbett")
             .withCreatedAt(new Date())
             .withMetadata("patientId", "corbett123")
-            .withMetadata("address", "641 Post Oak Dr. Hurst Texas, 76053")
+            .withMetadata("address", "123 Easy Street. Fort Worth, Texas, 76111")
             .addPath(Paths.get("docs/foo")).addPath(Paths.get("docs/reports/bar")).make();
         TreeFsTests.writeFile("folderWithAttr.json", folderWithAttr.toString());
 
@@ -101,7 +101,7 @@ public class TreeFsFolderTest {
             .withCreatedBy("corbett")
             .withCreatedAt(createdAt)
             .withMetadata("patientId", "corbett123")
-            .withMetadata("address", "641 Post Oak Dr. Hurst Texas, 76053").make();
+            .withMetadata("address", "123 Easy Street. Fort Worth, Texas, 76111").make();
 
         // Create a folder from a serialized version of it
         String text = TreeFsFactory.serializer().folder(folder);
@@ -123,7 +123,7 @@ public class TreeFsFolderTest {
         Assert.assertEquals("corbett", folder.createdBy());
         Assert.assertEquals("2014-01-14T20:59:02+00:00", folder.createdAt());
         Assert.assertEquals("corbett123", folder.metadata("patientId"));
-        Assert.assertEquals("641 Post Oak Dr. Hurst Texas, 76053", folder.metadata("address"));
+        Assert.assertEquals("123 Easy Street. Fort Worth, Texas, 76111", folder.metadata("address"));
     }
 }
 
