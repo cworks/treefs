@@ -65,12 +65,12 @@ import java.util.Map;
  * Trash:    PUT    /corbett/projects/house/bathroom/plans.pdf/#trash
  *
  */
-public class TreeFsServer extends Verticle {
+public class TreeFsVerticle extends Verticle {
 
     /**
      * Logger
      */
-    private static final Logger logger = Logger.getLogger(TreeFsServer.class);
+    private static final Logger logger = Logger.getLogger(TreeFsVerticle.class);
 
     /**
      * Default host this verticle is associated with
@@ -135,6 +135,17 @@ public class TreeFsServer extends Verticle {
         module.use(new HttpRouter().delete("/_settings",
             HttpServices.settingsService()));
 
+        // siege service is a simple load testing hook
+        module.use("/_siege",
+                new BodyParser(TreeFs.uploadDir()),
+                new HttpRouter().post("/.*"),
+                HttpServices.siegeService());
+
+        // ping hook for assisting load balancers
+        module.use("/_ping",
+                new HttpRouter().get("/.*"),
+                HttpServices.pingService());
+
         // sub-resource need to come before actual resources so matching works...need to fix this
         module.use(new HttpRouter().get("/.*/meta$",
             HttpServices.metadataService()));
@@ -154,18 +165,7 @@ public class TreeFsServer extends Verticle {
            HttpServices.placeHolderService()));
         module.use(new HttpRouter().delete("/.*",
                 HttpServices.deleteService()));
-
-        // siege service is a simple load testing hook
-        module.use("/siege",
-            new BodyParser(TreeFs.uploadDir()),
-            new HttpRouter().post("/.*"),
-            HttpServices.siegeService());
-
-        // ping hook for assisting load balancers
-        module.use("/ping",
-            new HttpRouter().get("/.*"),
-            HttpServices.pingService());
-
+        
         // be slow to speak and quick to listen
         module.listen(port, host, new Handler<Boolean>() {
             @Override

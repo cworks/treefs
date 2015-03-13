@@ -1,6 +1,5 @@
 package cworks.treefs.client;
 
-import cworks.treefs.server.VertxContainer;
 import cworks.treefs.domain.TreeFsFile;
 import cworks.treefs.domain.TreeFsFolder;
 import cworks.treefs.domain.TreeFsPath;
@@ -9,20 +8,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.List;
 
 /**
  * Unit tests that show how a client would use TreeFs
  */
 public class ClientApiTest extends BaseClientTest {
-
-    /**
-     * VertxContainer used in this unit test.  Note: treefs-client has a testCompile
-     * dependency on treefs-server because of this which is fine but in no way should
-     * treefs-client have a compile time dependency on treefs-server.
-     */
-    static VertxContainer container = null;
 
     static Config createConfig() {
         Config config = new Config() {

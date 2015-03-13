@@ -24,8 +24,8 @@ public class FileUtils {
 
     /**
      * Compute a Sha1 byte array for the content of file
-     * @param file
-     * @return
+     * @param file file to sha1
+     * @return sha1 bytes
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */

@@ -30,7 +30,7 @@ public class MainVerticle extends Verticle {
     /**
      * Entry-point for TreeFs-Server and TreeFs API
      */
-    private static final String TREEFS_SERVER = TreeFsServer.class.getName();
+    private static final String TREEFS_SERVER = TreeFsVerticle.class.getName();
 
     /**
      * Main Verticle for TreeFs.  All server initialization should take place here.

@@ -18,6 +18,7 @@ public class PingService extends HttpService {
             .string("app", "treefs")
             .string("version", "1.0.0")
             .string("time", ISO8601DateParser.toString(new Date()))
+            .number("status", 200)
             .build();
 
         event.response().setStatusCode(200)

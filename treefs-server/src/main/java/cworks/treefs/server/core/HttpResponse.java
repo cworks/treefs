@@ -92,7 +92,7 @@ public class HttpResponse implements HttpServerResponse {
      * Sets contentType header with a specific character set encoding
      * @param contentType mime type of content-header
      * @param contentEncoding charset encoding
-     * @return
+     * @return response instance
      */
     public HttpResponse setContentType(String contentType, String contentEncoding) {
         if (contentEncoding == null) {
@@ -262,9 +262,9 @@ public class HttpResponse implements HttpServerResponse {
     }
 
     /**
-     * @param name
-     * @param value
-     * @return
+     * @param name header name
+     * @param value header value
+     * @return response instance
      */
     @Override
     public HttpResponse putHeader(CharSequence name, CharSequence value) {
@@ -279,9 +279,9 @@ public class HttpResponse implements HttpServerResponse {
     }
 
     /**
-     * @param name
-     * @param values
-     * @return
+     * @param name header name
+     * @param values header values
+     * @return response instance
      */
     @Override
     public HttpResponse putHeader(CharSequence name, Iterable<CharSequence> values) {
@@ -301,9 +301,9 @@ public class HttpResponse implements HttpServerResponse {
     }
 
     /**
-     * @param name
-     * @param value
-     * @return
+     * @param name trailer name
+     * @param value trailer value
+     * @return response instance
      */
     @Override
     public HttpResponse putTrailer(CharSequence name, CharSequence value) {
@@ -318,9 +318,9 @@ public class HttpResponse implements HttpServerResponse {
     }
 
     /**
-     * @param name
-     * @param value
-     * @return
+     * @param name trailer name
+     * @param value trailer value
+     * @return response instance
      */
     @Override
     public HttpResponse putTrailer(CharSequence name, Iterable<CharSequence> value) {
@@ -560,7 +560,7 @@ public class HttpResponse implements HttpServerResponse {
 
     /**
      * WriteFilter used to filter response
-     * @param filter
+     * @param filter filter the response
      */
     void setFilter(WriterFilter filter) {
         this.filter = filter;
