@@ -63,6 +63,7 @@ public class JsonResponse extends HttpResponse {
         } else {
             super.end(Json.asString(data));
         }
+        super.close();
     }
 
     public void end(Object data, String enc) {
@@ -71,6 +72,7 @@ public class JsonResponse extends HttpResponse {
         } else {
             super.end(Json.asString(data));
         }
+        super.close();
     }
 
     public void jsonp(JsonElement json) {

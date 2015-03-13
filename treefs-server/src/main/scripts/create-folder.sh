@@ -7,6 +7,7 @@ finished() {
 
 [ "$#" -eq 1 ] || finished "Path argument required, $# provided"
 treefspath=$1
+
 curl -i -v \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \

@@ -19,6 +19,10 @@ public class JsonRequest extends HttpRequest {
     public void response(final JsonObject content) {
         response.asJson(content);
     }
+    
+    public void response(final Object content) {
+        response.end(content);
+    }
 
     /**
      * Write the json error to response and set status code to error value
