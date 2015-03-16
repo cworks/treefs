@@ -8,10 +8,9 @@ import cworks.treefs.TreeFsPathExistsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.domain.TreeFsFactory;
 import cworks.treefs.domain.TreeFsFile;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.FileUpload;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +24,9 @@ import java.util.Map;
  * HttpService than handles uploading files into TreeFs
  * @author comartin
  */
-public class UploadService extends HttpService {
+public class UploadService extends BasicHttpService {
 
-    public void handle(final HttpRequest request, Handler<HttpService> next) {
+    public void handle(final HttpRequest request) {
 
         FileUpload upload = null;
 
@@ -35,7 +34,7 @@ public class UploadService extends HttpService {
             TreeFsClient client = request.get("client");
 
             if (TreeFsValidation.isNull(request.files()) || request.files().size() < 1) {
-                next.handle(new TreeFsException("UploadHander needs a file to upload silly bird"));
+                throw new TreeFsException("UploadHander needs a file to upload silly bird");
             }
 
             //
@@ -107,13 +106,13 @@ public class UploadService extends HttpService {
         } catch(TreeFsPathExistsException ex) {
             // 400 Bad Request: path exists and overwrite wasn't provided
             request.response().setStatusCode(400);
-            next.handle(new TreeFsException(
-                "Path " + ex.path() + " exists and overwrite option wasn't provided"));
+            throw new TreeFsException(
+                "Path " + ex.path() + " exists and overwrite option wasn't provided");
         } catch(TreeFsException ex) {
             if(TreeFsValidation.isNull(upload)) {
-                next.handle(ex);
+                throw ex;
             } else {
-                next.handle(new TreeFsException("File Upload " + upload.filename() + " failed", ex));
+                throw new TreeFsException("File Upload " + upload.filename() + " failed", ex);
             }
         }
     }

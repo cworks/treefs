@@ -688,4 +688,12 @@ public class HttpRequest implements HttpServerRequest {
     public String toString() {
         return this.request.method() + " " + this.request.path() + " " + this.request.query();
     }
+
+    /**
+     * Every request has a unique id
+     * @return
+     */
+    public String id() {
+        return System.currentTimeMillis() + "";
+    }
 }

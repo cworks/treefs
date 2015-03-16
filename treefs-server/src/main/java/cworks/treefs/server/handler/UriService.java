@@ -3,9 +3,9 @@ package cworks.treefs.server.handler;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.server.TreeFsVerticle;
-import cworks.treefs.server.core.HttpService;
+import cworks.treefs.server.core.BasicHttpService;
+import cworks.treefs.server.core.HttpException;
 import cworks.treefs.server.core.HttpRequest;
-import org.vertx.java.core.Handler;
 
 /**
  * HttpService to check that URI meets TreeFs requirements, also contains general package-private
@@ -13,16 +13,16 @@ import org.vertx.java.core.Handler;
  *
  * @author comartin
  */
-public class UriService extends HttpService {
+public class UriService extends BasicHttpService {
     @Override
-    public void handle(HttpRequest event, Handler<HttpService> next) {
+    public void handle(HttpRequest event) {
         if(TreeFsValidation.isNull(event.path())) {
-            next.handle(404);
+            throw new HttpException(404);
         }
         if(!event.path().startsWith(TreeFsVerticle.TREEFS_ROOT)) {
-            next.handle(404);
+            throw new HttpException(404);
+            
         }
-        next.handle(null);
     }
 
     /**

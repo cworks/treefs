@@ -9,10 +9,9 @@ import cworks.treefs.domain.TreeFsFactory;
 import cworks.treefs.domain.TreeFsFile;
 import cworks.treefs.domain.TreeFsFolder;
 import cworks.treefs.domain.TreeFsPath;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.FileUpload;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,10 +27,10 @@ import static cworks.treefs.TreeFsValidation.isNullOrEmpty;
  * Service to create a path in TreeFs
  * @author comartin
  */
-public class PathService extends HttpService {
+public class PathService extends BasicHttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<HttpService> next) {
+    public void handle(HttpRequest request) {
 
         TreeFsClient client = request.get("client");
 
@@ -41,8 +40,7 @@ public class PathService extends HttpService {
             String path = UriService.treefsPath(mount, request.path());
             data.setString("path", path);
         } else {
-            // continue to next handler because we need a path
-            next.handle(null);
+            return;
         }
 
         TreeFsPath treefsPath = null;
@@ -63,13 +61,12 @@ public class PathService extends HttpService {
         } catch(TreeFsPathExistsException ex) {
             // 400 Bad Request: path exists and overwrite wasn't provided
             request.response().setStatusCode(400);
-            next.handle(new TreeFsException("Path " + ex.path()
-                + " exists and overwrite option wasn't provided", ex));
+            throw new TreeFsException("Path " + ex.path()
+                + " exists and overwrite option wasn't provided", ex);
         } catch(TreeFsException ex) {
             request.response().setStatusCode(400);
-            next.handle(new TreeFsException("Create Path " + data.getString("path") + " failed", ex));
+            throw new TreeFsException("Create Path " + data.getString("path") + " failed", ex);
         }
-
 
     }
 

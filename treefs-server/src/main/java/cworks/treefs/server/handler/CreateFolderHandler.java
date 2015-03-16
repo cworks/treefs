@@ -7,9 +7,8 @@ import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsPathExistsException;
 import cworks.treefs.domain.TreeFsFactory;
 import cworks.treefs.domain.TreeFsFolder;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 import static cworks.treefs.TreeFsValidation.isNull;
 
@@ -17,10 +16,10 @@ import static cworks.treefs.TreeFsValidation.isNull;
  * HttpService that handles folder creation in TreeFs
  * @author comartin
  */
-public class CreateFolderHandler extends HttpService {
+public class CreateFolderHandler extends BasicHttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<HttpService> next) {
+    public void handle(HttpRequest request) {
         TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
         payload.setString("type", "folder");
@@ -29,8 +28,7 @@ public class CreateFolderHandler extends HttpService {
             String path = UriService.treefsPath(mount, request.path());
             payload.setString("path", path);
         } else {
-            // continue to next handler
-            next.handle(null);
+            return;
         }
 
         if(request.hasBody()) {
@@ -48,10 +46,8 @@ public class CreateFolderHandler extends HttpService {
         } catch(TreeFsPathExistsException ex) {
             // 400 Bad Request: path exists and overwrite wasn't provided
             request.response().setStatusCode(400);
-            next.handle(new TreeFsException("Path " + ex.path()
-                + " exists and overwrite option wasn't provided"));
-        } catch(TreeFsException ex) {
-            next.handle(ex);
+            throw new TreeFsException("Path " + ex.path()
+                + " exists and overwrite option wasn't provided");
         }
 
     }

@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cworks.treefs.TreeFsValidation.isNull;
+
 /**
  * HttpModule is the top-level integration with Vertx.  The idea is a Module can encapsulate
  * both Vertx and a set of HttpService(s) that "compose" this Module.  High-level design point
@@ -283,17 +285,12 @@ public class HttpModule {
         server.requestHandler(req -> {
             // decorate http request with httpService stuff
             final HttpRequest request = wrapRequest(req, secure);
-            // add x-powered-by header is enabled
-            Boolean poweredBy = request.get("x-powered-by");
-            if (poweredBy != null && poweredBy) {
-                request.response().putHeader("x-powered-by", "TreeFs");
-            }
 
             Handler<HttpService> chainHandler = new Handler<HttpService>() {
                 int currentService = -1;
                 @Override
                 public void handle(HttpService service) {
-                    if(!(service instanceof ErrorHandler)) {
+                    if(isNull(service)) {
                         currentService++;
                         if (currentService < services.size()) {
                             MountedHttpService mounted = services.get(currentService);
@@ -327,7 +324,6 @@ public class HttpModule {
             
             // start chain
             chainHandler.handle(null);
-
         });
 
         return this;

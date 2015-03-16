@@ -4,13 +4,11 @@ import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
 import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsValidation;
-import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import cworks.treefs.server.json.JsonHttpService;
+import cworks.treefs.server.json.JsonService;
 import cworks.treefs.server.json.JsonRequest;
-import org.vertx.java.core.Handler;
 
 import java.util.Map;
+
 
 /**
  * HttpService that returns metadata associated with a path in TreeFs
@@ -44,7 +42,7 @@ import java.util.Map;
 //    }
 //}
 
-public class MetadataService extends JsonHttpService {
+public class MetadataService extends JsonService {
     
     @Override
     public void handle(final JsonRequest request) {

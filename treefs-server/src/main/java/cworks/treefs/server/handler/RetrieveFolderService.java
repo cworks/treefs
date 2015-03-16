@@ -6,17 +6,17 @@ import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.domain.TreeFsFolder;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 /**
  * HttpService that handles retrieving information about a folder in TreeFs
  * @author comartin
  */
-public class RetrieveFolderService extends HttpService {
+public class RetrieveFolderService extends BasicHttpService {
+    
     @Override
-    public void handle(HttpRequest request, Handler<HttpService> next) {
+    public void handle(HttpRequest request) {
 
         TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
@@ -24,7 +24,7 @@ public class RetrieveFolderService extends HttpService {
             String path = UriService.treefsPath(mount, request.path());
             payload.setString("path", path);
         } else {
-            next.handle(null);
+            return;
         }
 
         String depth = request.getParameter("depth", "-1");
@@ -45,8 +45,8 @@ public class RetrieveFolderService extends HttpService {
         if(folder != null) {
             request.response().end(folder);
         } else {
-            next.handle(new TreeFsException("unable to retrieve folder: "
-                + payload.getString("path")));
+            throw new TreeFsException("unable to retrieve folder: "
+                + payload.getString("path"));
         }
     }
 

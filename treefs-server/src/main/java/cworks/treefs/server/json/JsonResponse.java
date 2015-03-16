@@ -27,7 +27,6 @@ public class JsonResponse extends HttpResponse {
         
         super.setStatusCode(200);
         super.end(Json.asPrettyString(okWrapper));
-        super.close();
     }
 
     public void asJson(JsonObject content) {
@@ -40,7 +39,6 @@ public class JsonResponse extends HttpResponse {
 
             super.setStatusCode(200);
             super.end(Json.asString(okWrapper));
-            super.close();
         }
     }
 
@@ -54,7 +52,6 @@ public class JsonResponse extends HttpResponse {
         } else {
             super.end(Json.asString(errorWrapper));
         }
-        super.close();
     }
     
     public void end(Object data) {
@@ -63,7 +60,6 @@ public class JsonResponse extends HttpResponse {
         } else {
             super.end(Json.asString(data));
         }
-        super.close();
     }
 
     public void end(Object data, String enc) {
@@ -72,7 +68,6 @@ public class JsonResponse extends HttpResponse {
         } else {
             super.end(Json.asString(data));
         }
-        super.close();
     }
 
     public void jsonp(JsonElement json) {

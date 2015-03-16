@@ -6,19 +6,18 @@ import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsValidation;
 import cworks.treefs.domain.TreeFsPath;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 /**
  * HttpService to copy a source path to a target path
  *
  * @author comartin
  */
-public class CopyService extends HttpService {
+public class CopyService extends BasicHttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<HttpService> next) {
+    public void handle(HttpRequest request) {
 
         TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
@@ -27,8 +26,7 @@ public class CopyService extends HttpService {
             logger.debug("copyHandler on sourcePath: " + source);
             payload.setString("source", source);
         } else {
-            // continue to next handler
-            next.handle(null);
+            return;
         }
 
         if(request.hasBody()) {
@@ -45,9 +43,9 @@ public class CopyService extends HttpService {
         if(!TreeFsValidation.isNull(path)) {
             request.response().end(path);
         } else {
-            next.handle(new TreeFsException(
+            throw new TreeFsException(
                 "unable to copy source path: " + payload.getString("source") +
-                " to target path: " + payload.getString("target")));
+                " to target path: " + payload.getString("target"));
         }
 
     }

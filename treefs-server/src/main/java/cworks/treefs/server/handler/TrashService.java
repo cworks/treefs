@@ -2,22 +2,21 @@ package cworks.treefs.server.handler;
 
 import cworks.json.JsonObject;
 import cworks.treefs.TreeFs;
+import cworks.treefs.TreeFsClient;
 import cworks.treefs.TreeFsException;
 import cworks.treefs.TreeFsFolderNotEmptyException;
 import cworks.treefs.TreeFsValidation;
+import cworks.treefs.server.core.BasicHttpService;
 import cworks.treefs.server.core.HttpRequest;
-import cworks.treefs.TreeFsClient;
-import cworks.treefs.server.core.HttpService;
-import org.vertx.java.core.Handler;
 
 /**
  * HttpService that moves a file or folder into the trash
  * @author comartin
  */
-public class TrashService extends HttpService {
+public class TrashService extends BasicHttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<HttpService> next) {
+    public void handle(HttpRequest request) {
 
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();
@@ -26,8 +25,7 @@ public class TrashService extends HttpService {
             // String path = UriHandler.treefsPath(mount, request.path());
             data.setString("path", path);
         } else {
-            // next HttpService
-            next.handle(null);
+            return;
         }
 
         try {
@@ -37,11 +35,11 @@ public class TrashService extends HttpService {
                 200, data.getString("path") + " moved to trash."));
         } catch(TreeFsFolderNotEmptyException ex) {
             request.response().setStatusCode(400);
-            next.handle(new TreeFsException("path " + data.getString("path")
-                + " NOT empty and forceDelete option NOT given.", ex));
+            throw new TreeFsException("path " + data.getString("path")
+                + " NOT empty and forceDelete option NOT given.", ex);
         } catch(TreeFsException ex) {
             request.response().setStatusCode(400);
-            next.handle(ex);
+            throw ex;
         }
     }
 
