@@ -29,7 +29,7 @@ public class FetchPathService extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
 
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();

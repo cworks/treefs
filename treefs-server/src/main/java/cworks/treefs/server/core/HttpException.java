@@ -2,7 +2,7 @@ package cworks.treefs.server.core;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class HttpException extends Throwable {
+public class HttpException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

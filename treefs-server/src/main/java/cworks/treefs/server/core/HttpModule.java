@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cworks.treefs.common.ObjectUtils.isNull;
-
 /**
  * HttpModule is the top-level integration with Vertx.  The idea is a Module can encapsulate
  * both Vertx and a set of HttpService(s) that "compose" this Module.  High-level design point
@@ -119,27 +117,9 @@ public class HttpModule {
     }
 
     /**
-     * Attached HttpServices representing a bound HttpService to a specific URL path
-     */
-    private static class MountedHttpService {
-        final String mount; // url attach point
-        final HttpService httpService;
-
-        /**
-         * Create a new MountedHttpService instance
-         * @param mount the mount path
-         * @param httpService the HttpService to use on the path
-         */
-        private MountedHttpService(String mount, HttpService httpService) {
-            this.mount = mount;
-            this.httpService = httpService;
-        }
-    }
-
-    /**
      * Ordered list of mounted HttpServices in a chain
      */
-    private final List<MountedHttpService> serviceList = new ArrayList<>();
+    private final List<MountedHttpService> services = new ArrayList<>();
 
     /**
      * A special HttpService for dealing with jacked up stuff
@@ -166,7 +146,7 @@ public class HttpModule {
             if(m.isErrorHandler()) {
                 errorHandler = m;
             } else {
-                serviceList.add(new MountedHttpService(route, m));
+                services.add(new MountedHttpService(route, m));
             }
 
             // initialize the HttpService with the current Vert.x and Logger
@@ -195,9 +175,9 @@ public class HttpModule {
      * @return
      */
     public HttpModule use(String route, final Handler<HttpRequest> handler) {
-        serviceList.add(new MountedHttpService(route, new HttpService() {
+        services.add(new MountedHttpService(route, new HttpService() {
             @Override
-            public void handle(HttpRequest request, Handler<Object> next) {
+            public void handle(HttpRequest request, Handler<HttpService> next) {
                 handler.handle(request);
             }
         }));
@@ -298,90 +278,56 @@ public class HttpModule {
     public HttpModule listen(final HttpServer server) {
         // is this server HTTPS?
         final boolean secure = server.isSSL();
+
         // http request handler that deals with the http request-response cycle
-        server.requestHandler(new Handler<HttpServerRequest>() {
+        server.requestHandler(req -> {
+            // decorate http request with httpService stuff
+            final HttpRequest request = wrapRequest(req, secure);
+            // add x-powered-by header is enabled
+            Boolean poweredBy = request.get("x-powered-by");
+            if (poweredBy != null && poweredBy) {
+                request.response().putHeader("x-powered-by", "TreeFs");
+            }
 
-            @Override
-            public void handle(HttpServerRequest req) {
-
-                // decorate http request with httpService stuff
-                final HttpRequest request = _wrap(req, secure);
-                // add x-powered-by header is enabled
-                Boolean poweredBy = request.get("x-powered-by");
-                if (poweredBy != null && poweredBy) {
-                    request.response().putHeader("x-powered-by", "TreeFs");
-                }
-
-                // add json content type (TODO don't like hard coding this here)
-                request.response().putHeader("Content-Type", "application/json");
-
-                // start the handler chain
-                Handler handlerChain = new Handler<Object>() {
-                    int currentService = -1;
-                    @Override
-                    public void handle(Object error) {
-                        // if no error
-                        if(isNull(error)) {
-                            currentService++;
-                            if (currentService < serviceList.size()) {
-                                MountedHttpService mountedHttpService = serviceList.get(currentService);
-                                if(request.path().startsWith(mountedHttpService.mount)) {
-                                    HttpService ms = mountedHttpService.httpService;
-                                    try {
-                                        // handle is called on event-loop
-                                        ms.handle(request, this);
-                                    } catch(Throwable ex) {
-                                        handle(ex);
-                                    }
-                                } else {
-                                    // the HttpService was not mounted on this uri,
-                                    // skip to the next entry
-                                    handle(null);
+            Handler<HttpService> chainHandler = new Handler<HttpService>() {
+                int currentService = -1;
+                @Override
+                public void handle(HttpService service) {
+                    if(!(service instanceof ErrorHandler)) {
+                        currentService++;
+                        if (currentService < services.size()) {
+                            MountedHttpService mounted = services.get(currentService);
+                            if(request.path().startsWith(mounted.mount())) {
+                                try {
+                                    mounted.handle(request, this);
+                                } catch(Throwable ex) {
+                                    handle(new ErrorHandler(ex));
                                 }
                             } else {
-                                // reached the end and no handler was able to answer the request
-                                HttpServerResponse response = request.response();
-                                response.setStatusCode(404);
-                                response.setStatusMessage(HttpResponseStatus.valueOf(404).reasonPhrase());
-                                if (errorHandler != null) {
-                                    errorHandler.handle(request, null);
-                                } else {
-                                    response.end(HttpResponseStatus.valueOf(404).reasonPhrase());
-                                }
+                                // the HttpService was not mounted on this uri, so skip to the next entry
+                                handle(null);
                             }
-                        // else we got an error
                         } else {
-                            request.put("error", error);
-                            if(errorHandler != null) {
+                            // reached the end and no handler was able to answer the request
+                            HttpServerResponse response = request.response();
+                            response.setStatusCode(404);
+                            response.setStatusMessage(HttpResponseStatus.valueOf(404).reasonPhrase());
+                            if (errorHandler != null) {
                                 errorHandler.handle(request, null);
                             } else {
-                                HttpServerResponse response = request.response();
-                                int errorCode;
-                                // if the error was set on the response use it
-                                if(response.getStatusCode() >= 400) {
-                                    errorCode = response.getStatusCode();
-                                } else {
-                                    // if it was set as the error object use it
-                                    if (error instanceof Number) {
-                                        errorCode = ((Number) error).intValue();
-                                    } else if (error instanceof HttpException) {
-                                        errorCode = ((HttpException) error).getErrorCode().intValue();
-                                    } else {
-                                        // default error code
-                                        errorCode = 500;
-                                    }
-                                }
-
-                                response.setStatusCode(errorCode);
-                                response.setStatusMessage(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
-                                response.end(HttpResponseStatus.valueOf(errorCode).reasonPhrase());
+                                response.end(HttpResponseStatus.valueOf(404).reasonPhrase());
                             }
                         }
+                    } else {
+                        // else we got an error
+                        // TODO look at prior implementation
                     }
-                };
-                // start event handling chain
-                handlerChain.handle(null);
-            }
+                }
+            };
+            
+            // start chain
+            chainHandler.handle(null);
+
         });
 
         return this;
@@ -394,7 +340,7 @@ public class HttpModule {
      * @param secure - set to true if using SSL
      * @return
      */
-    private HttpRequest _wrap(HttpServerRequest request, boolean secure) {
+    private HttpRequest wrapRequest(HttpServerRequest request, boolean secure) {
         // the context map is shared with all HttpServices
         final Map<String, Object> context = new Context(defaultContext);
         HttpResponse response = new HttpResponse(request.response(), context);

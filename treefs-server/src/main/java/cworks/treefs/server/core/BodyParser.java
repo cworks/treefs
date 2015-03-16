@@ -50,7 +50,7 @@ public class BodyParser extends HttpService {
      * @param next
      */
     @Override
-    public void handle(final HttpRequest request, final Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<HttpService> next) {
         final String method = request.method();
 
         // GET and HEAD have no setBody
@@ -88,7 +88,7 @@ public class BodyParser extends HttpService {
                         fileUpload.exceptionHandler(new Handler<Throwable>() {
                             @Override
                             public void handle(Throwable throwable) {
-                                next.handle(throwable);
+                                next.handle(new ErrorHandler(throwable));
                             }
                         });
 
@@ -115,7 +115,7 @@ public class BodyParser extends HttpService {
                         } else {
                             request.dataHandler(null);
                             request.endHandler(null);
-                            next.handle(413);
+                            next.handle(new ErrorHandler(413));
                         }
                     } else {
                         if (!isMULTIPART && !isURLENCODEC) {
@@ -145,22 +145,22 @@ public class BodyParser extends HttpService {
      * @param next
      */
     private void parseJson(final HttpRequest request, final Buffer buffer,
-        final Handler<Object> next) {
+        final Handler<HttpService> next) {
         try {
             String content = buffer.toString();
             if (content.length() > 0) {
                 try {
                     request.setBody(Json.asObject(content, Map.class));
                 } catch (DecodeException e) {
-                    next.handle(400);
+                    next.handle(new ErrorHandler(400));
                     return;
                 }
                 next.handle(null);
             } else {
-                next.handle(400);
+                next.handle(new ErrorHandler(400));
             }
         } catch (DecodeException ex) {
-            next.handle(ex);
+            next.handle(new ErrorHandler(ex));
         }
     }
 }

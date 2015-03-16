@@ -8,7 +8,7 @@ import org.vertx.java.core.Handler;
 public class SettingsService extends HttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
 
         System.out.println("SettingsService: " + request.path());
         System.out.println("Settings: " + Settings.asString());

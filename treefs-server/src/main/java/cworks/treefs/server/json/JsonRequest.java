@@ -1,6 +1,7 @@
 package cworks.treefs.server.json;
 
 import cworks.json.JsonObject;
+import cworks.treefs.server.core.HttpException;
 import cworks.treefs.server.core.HttpRequest;
 
 public class JsonRequest extends HttpRequest {
@@ -30,6 +31,15 @@ public class JsonRequest extends HttpRequest {
      * @param status http error status
      */
     public void error(final Exception ex, int status) {
+        response.asJson(ex, status);
+    }
+
+    /**
+     * Write a json error response and set status code to error value
+     * @param status
+     */
+    public void error(String message, int status) {
+        HttpException ex = new HttpException(status, message);
         response.asJson(ex, status);
     }
     

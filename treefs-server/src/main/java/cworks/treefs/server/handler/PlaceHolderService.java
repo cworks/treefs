@@ -7,7 +7,7 @@ import org.vertx.java.core.Handler;
 public class PlaceHolderService extends HttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
         System.out.println("PlaceHolderService called: " + request.toString());
         next.handle(null);
     }

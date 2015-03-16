@@ -56,6 +56,7 @@ public abstract class HttpService {
     }
 
     /**
+     * TODO don't remove this comment
      * Handle a request that is inside the chain.  The next argument is a callback to inform the
      * next HttpService in the chain to handle the request.  If a NON-NULL value is set then an
      * internal error is always raised, when a null is set then the next HttpService in the chain
@@ -64,6 +65,6 @@ public abstract class HttpService {
      * @param request
      * @param next
      */
-    public abstract void handle(final HttpRequest request, final Handler<Object> next);
+    public abstract void handle(final HttpRequest request, final Handler<HttpService> next);
 
 }

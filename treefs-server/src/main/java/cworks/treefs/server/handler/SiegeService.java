@@ -11,7 +11,7 @@ import org.vertx.java.core.eventbus.Message;
 public class SiegeService extends HttpService {
 
     @Override
-    public void handle(final HttpRequest request, final Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<HttpService> next) {
 
         JsonObject data = request.body();
         final Long siegeVal = data.getLong("siegeVal", 10000);

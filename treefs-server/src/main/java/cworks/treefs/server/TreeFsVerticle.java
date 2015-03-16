@@ -1,10 +1,7 @@
 package cworks.treefs.server;
 
 import cworks.treefs.TreeFs;
-import cworks.treefs.server.core.BodyParser;
-import cworks.treefs.server.core.ErrorHandler;
-import cworks.treefs.server.core.HttpModule;
-import cworks.treefs.server.core.HttpRouter;
+import cworks.treefs.server.core.*;
 import cworks.treefs.server.handler.AuthorizationService;
 import cworks.treefs.server.handler.FileSystemService;
 import cworks.treefs.server.handler.HttpServices;
@@ -122,6 +119,7 @@ public class TreeFsVerticle extends Verticle {
         module.use(new ErrorHandler(false))
             .use(new UriService())
             .use(new AuthorizationService())
+            .use(new HeaderParser())
             .use(new FileSystemService())
             .use(new BodyParser(TreeFs.uploadDir()));
 

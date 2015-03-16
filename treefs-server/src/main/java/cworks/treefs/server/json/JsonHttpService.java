@@ -13,11 +13,23 @@ public abstract class JsonHttpService extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(final HttpRequest request, final Handler<HttpService> next) {
 
         JsonRequest jsonRequest = new JsonRequest(request);
+
+        pre(jsonRequest);
         handle(jsonRequest);
+        post(jsonRequest);
     }
     
-    public abstract void handle(JsonRequest request);
+    protected void pre(final JsonRequest request) {
+        
+        
+    }
+    
+    protected void post(final JsonRequest request) {
+
+    }
+    
+    public abstract void handle(final JsonRequest request);
 }

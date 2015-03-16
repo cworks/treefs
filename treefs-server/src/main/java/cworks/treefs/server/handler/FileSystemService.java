@@ -14,7 +14,7 @@ import org.vertx.java.core.Handler;
 public class FileSystemService extends HttpService {
 
     @Override
-    public void handle(HttpRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<HttpService> next) {
         String path = event.path();
         TreeFsClient client = event.get("client");
         String fs = UriService.fileSystem(mount, path);

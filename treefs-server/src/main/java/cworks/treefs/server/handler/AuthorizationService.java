@@ -22,7 +22,7 @@ public class AuthorizationService extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
 
         // check for required treefs-client header
         MultiMap headers = request.headers();

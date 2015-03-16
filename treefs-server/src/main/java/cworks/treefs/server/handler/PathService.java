@@ -31,7 +31,7 @@ import static cworks.treefs.TreeFsValidation.isNullOrEmpty;
 public class PathService extends HttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
 
         TreeFsClient client = request.get("client");
 

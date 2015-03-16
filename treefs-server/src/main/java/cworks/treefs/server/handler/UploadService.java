@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class UploadService extends HttpService {
 
-    public void handle(final HttpRequest request, Handler<Object> next) {
+    public void handle(final HttpRequest request, Handler<HttpService> next) {
 
         FileUpload upload = null;
 

@@ -17,7 +17,7 @@ import org.vertx.java.core.Handler;
 public class TrashService extends HttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
 
         TreeFsClient client = request.get("client");
         JsonObject data = new JsonObject();

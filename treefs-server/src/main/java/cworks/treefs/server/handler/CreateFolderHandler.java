@@ -20,7 +20,7 @@ import static cworks.treefs.TreeFsValidation.isNull;
 public class CreateFolderHandler extends HttpService {
 
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
         TreeFsClient client = request.get("client");
         JsonObject payload = new JsonObject();
         payload.setString("type", "folder");

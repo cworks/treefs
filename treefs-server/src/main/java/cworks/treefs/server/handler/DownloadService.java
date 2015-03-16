@@ -15,7 +15,7 @@ import org.vertx.java.core.Handler;
 public class DownloadService extends HttpService {
 
     @Override
-    public void handle(HttpRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<HttpService> next) {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!TreeFsValidation.isNull(event.path())) {

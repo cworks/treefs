@@ -16,7 +16,7 @@ import static cworks.treefs.TreeFsValidation.isNull;
 public class DeleteService extends HttpService {
 
     @Override
-    public void handle(HttpRequest event, Handler<Object> next) {
+    public void handle(HttpRequest event, Handler<HttpService> next) {
         TreeFsClient client = event.get("client");
         JsonObject payload = new JsonObject();
         if(!isNull(event.path())) {

@@ -26,12 +26,32 @@ public class ErrorHandler extends HttpService {
     private final boolean fullStack;
 
     /**
+     * Throwable thing being handled by this HttpService 
+     */
+    private Throwable throwable;
+
+    /**
+     * Should be error (400 or 500) level http status code
+     */
+    private int httpStatus;
+
+    public ErrorHandler(Throwable throwable) {
+        this(true);
+        this.throwable = throwable;
+    }
+    
+    /**
      * Create this ErrorHandler to allow printing of stack traces in the response if fullStack
      * is true otherwise only the error message is used.
      * @param fullStack
      */
     public ErrorHandler(boolean fullStack) {
         this.fullStack = fullStack;
+    }
+
+    public ErrorHandler(int httpStatus) {
+        this(true);
+        this.httpStatus = httpStatus;
     }
 
     /**
@@ -49,7 +69,7 @@ public class ErrorHandler extends HttpService {
      * @param next
      */
     @Override
-    public void handle(HttpRequest request, Handler<Object> next) {
+    public void handle(HttpRequest request, Handler<HttpService> next) {
         HttpResponse response = request.response();
 
         //
